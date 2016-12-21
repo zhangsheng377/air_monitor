@@ -4,6 +4,7 @@ import pycurl
 import serial
 import json
 import StringIO
+import smbus
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11,GPIO.OUT)
@@ -17,23 +18,31 @@ Vret_L=0
 check=0
 A=1000
 
-username='zhangsheng377'
-password='bz292929'
+address = 0x48
+A0 = 0x40
+A1 = 0x41
+A2 = 0x42
+A3 = 0x43
+bus = smbus.SMBus(1)
 
-response = StringIO.StringIO()
-mycurl=pycurl.Curl()
-mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/user/apikey?username='+username+'&pass='+password)
-mycurl.setopt(mycurl.WRITEFUNCTION, response.write)
-mycurl.perform()
-#response=mycurl.getinfo(mycurl.RESPONSE_CODE)
-myresp=json.loads(response.getvalue())
-if myresp['errcode']=='0':
-     apikey=myresp['apikey']
-     print apikey
-mycurl.close()
+#username='zhangsheng377'
+#password='bz292929'
+#response = StringIO.StringIO()
+#mycurl=pycurl.Curl()
+#mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/user/apikey?username='+username+'&pass='+password)
+#mycurl.setopt(mycurl.WRITEFUNCTION, response.write)
+#mycurl.perform()
+##response=mycurl.getinfo(mycurl.RESPONSE_CODE)
+#myresp=json.loads(response.getvalue())
+#if myresp['errcode']=='0':
+#     apikey=myresp['apikey']
+#     print apikey
+#mycurl.close()
+apikey="779bfd896876dc377d3ed78d0fa1dbf4"
 
 device_id='353097'
-sensor_id='397985'
+sensor_pm25_id='397985'
+sensor_CO_id='398391'
 
 while True:
      waitlen=serial0.inWaiting()
@@ -71,7 +80,7 @@ while True:
                                    if Ud>0:
                                         print "pm2.5 :",Ud
                                         mycurl=pycurl.Curl()
-                                        mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_id+'/datapoints')
+                                        mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_pm25_id+'/datapoints')
                                         mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
                                         mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":Ud}))
                                         try:
@@ -79,6 +88,21 @@ while True:
                                         except Exception,e:
                                              print Exception,":",e
                                         mycurl.close()
+
+                                        bus.write_byte(address,A0)  
+                                        value_CO = bus.read_byte(address)*1.0/255*990+10
+                                        print "CO :",value_CO
+                                        mycurl=pycurl.Curl()
+                                        mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_CO_id+'/datapoints')
+                                        mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
+                                        mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":value_CO}))
+                                        try:
+                                             mycurl.perform()
+                                        except Exception,e:
+                                             print Exception,":",e
+                                        mycurl.close()
+
+                                        
                                         break
           #serial0.flushInput()
           #print "sleep"
