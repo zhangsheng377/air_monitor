@@ -90,7 +90,7 @@ while True:
                                         mycurl.close()
 
                                         bus.write_byte(address,A0)  
-                                        value_CO = bus.read_byte(address)*1.0/255*990+10
+                                        value_CO = bus.read_byte(address)*1.0/255*1000
                                         print "CO :",value_CO
                                         mycurl=pycurl.Curl()
                                         mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_CO_id+'/datapoints')
