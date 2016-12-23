@@ -75,7 +75,7 @@ while True:
                          count=0
                          if listhex[i] == 255:
                               if check==(Vout_H+Vout_L+Vret_H+Vret_L)%256:
-                                   Vout=(Vout_H*256+Vout_L)*1.0/1024*8;
+                                   Vout=(Vout_H*256+Vout_L)*1.0/1023*5;
                                    Ud=1.0*A*Vout
                                    if Ud>0:
                                         print "pm2.5 :",Ud
@@ -89,7 +89,7 @@ while True:
                                              print Exception,":",e
                                         mycurl.close()
 
-                                        bus.write_byte(address,A0)  
+                                        bus.write_byte(address,A0)
                                         value_CO = bus.read_byte(address)*1.0/255*1000
                                         print "CO :",value_CO
                                         mycurl=pycurl.Curl()
