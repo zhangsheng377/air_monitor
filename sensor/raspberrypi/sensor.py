@@ -16,7 +16,7 @@ Vout_L=0
 Vret_H=0
 Vret_L=0
 check=0
-A=1000
+A=1200
 
 address = 0x48
 A0 = 0x40
@@ -75,7 +75,7 @@ while True:
                          count=0
                          if listhex[i] == 255:
                               if check==(Vout_H+Vout_L+Vret_H+Vret_L)%256:
-                                   Vout=(Vout_H*256+Vout_L)*1.0/1023*5;
+                                   Vout=(Vout_H*256+Vout_L)*1.0/1024*5;
                                    Ud=1.0*A*Vout
                                    if Ud>0:
                                         print "pm2.5 :",Ud
@@ -90,7 +90,7 @@ while True:
                                         mycurl.close()
 
                                         bus.write_byte(address,A0)
-                                        value_CO = bus.read_byte(address)*1.0/255*1000
+                                        value_CO = bus.read_byte(address)*1.0/256*1000
                                         print "CO :",value_CO
                                         mycurl=pycurl.Curl()
                                         mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_CO_id+'/datapoints')
