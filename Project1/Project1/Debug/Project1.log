@@ -1,0 +1,9 @@
+﻿  main.cpp
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(25): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(38): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(53): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(66): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(87): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
+c:\users\43587\desktop\code\air_monitor\project1\project1\main.cpp(101): warning C4101: “sErrMsg”: 未引用的局部变量
+  Project1.vcxproj -> C:\Users\43587\Desktop\code\air_monitor\Project1\Debug\Project1.exe
+  Project1.vcxproj -> C:\Users\43587\Desktop\code\air_monitor\Project1\Debug\Project1.pdb (Partial PDB)
