@@ -14,9 +14,9 @@ public:
 	YEELINK_READ();
 	~YEELINK_READ();
 	static double read_lastvalue(int device_id, int sensor_id);
-	static std::string read_lastdata(int device_id, int sensor_id);
-private:
 	
+private:
+	static std::string read_lastdata(int device_id, int sensor_id);
 };
 
 YEELINK_READ::YEELINK_READ()
