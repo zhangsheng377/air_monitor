@@ -1,10 +1,4 @@
 ﻿  main.cpp
-c:\users\43587\desktop\code\air_monitor\project1\project1\json\json.hpp(6879): warning C4003: “max”宏的实参不足
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(55): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(68): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(94): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(108): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(122): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\yeelink_read.hpp(136): warning C4101: “sErrMsg”: 未引用的局部变量
+c:\users\43587\desktop\code\air_monitor\project1\project1\yeelink_read\json\json.hpp(6879): warning C4003: “max”宏的实参不足
   Project1.vcxproj -> C:\Users\43587\Desktop\code\air_monitor\Project1\Debug\Project1.exe
   Project1.vcxproj -> C:\Users\43587\Desktop\code\air_monitor\Project1\Debug\Project1.pdb (Partial PDB)

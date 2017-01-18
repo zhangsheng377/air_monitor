@@ -6,15 +6,17 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include "json\json.hpp"
 
 class YEELINK_READ
 {
 public:
 	YEELINK_READ();
 	~YEELINK_READ();
+	static double read_lastvalue(int device_id, int sensor_id);
 	static std::string read_lastdata(int device_id, int sensor_id);
 private:
-
+	
 };
 
 YEELINK_READ::YEELINK_READ()
@@ -23,6 +25,24 @@ YEELINK_READ::YEELINK_READ()
 
 YEELINK_READ::~YEELINK_READ()
 {
+}
+
+double YEELINK_READ::read_lastvalue(int device_id, int sensor_id) {
+	double result = -1.0;
+	std::string str;
+	do {
+		str = read_lastdata(device_id, sensor_id);
+	} while (str.empty());
+
+	try {
+		nlohmann::json jj = nlohmann::json::parse(str.c_str());
+		/*for (json::iterator it = j3.begin(); it != j3.end(); ++it) {
+		std::cout << it.key() << " : " << it.value() << "\n";
+		}*/
+		result = jj["value"];
+	}
+	catch(char*){}
+	return result;
 }
 
 std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
@@ -52,7 +72,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 		if (nRet)
 		{
 			char ermsg[1024] = { 0 };
-			sprintf_s(ermsg, "download %s,WSAStartup() error,error code : %d", sRemoteFilePath, nRet);
+			sprintf_s(ermsg, "download %s,WSAStartup() error,error code : %d", sRemoteFilePath.c_str(), nRet);
 			throw ermsg;
 		}
 
@@ -65,7 +85,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 		if (Socket == INVALID_SOCKET)
 		{
 			char ermsg[1024] = { 0 };
-			sprintf_s(ermsg, "download %s,socket() error,error code : %d", sRemoteFilePath, WSAGetLastError());
+			sprintf_s(ermsg, "download %s,socket() error,error code : %d", sRemoteFilePath.c_str(), WSAGetLastError());
 
 			throw ermsg;
 		}
@@ -91,7 +111,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 
 			if (nRet == SOCKET_ERROR) {
 				char ermsg[1024] = { 0 };
-				sprintf_s(ermsg, "download %s,connect() error,error code : %d", sRemoteFilePath, WSAGetLastError());
+				sprintf_s(ermsg, "download %s,connect() error,error code : %d", sRemoteFilePath.c_str(), WSAGetLastError());
 				closesocket(Socket);
 				throw ermsg;
 			}
@@ -105,7 +125,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 		if (nRet == SOCKET_ERROR)
 		{
 			char ermsg[1024] = { 0 };
-			sprintf_s(ermsg, "download %s,send() error,error code : %d", sRemoteFilePath, WSAGetLastError());
+			sprintf_s(ermsg, "download %s,send() error,error code : %d", sRemoteFilePath.c_str(), WSAGetLastError());
 			closesocket(Socket);
 			throw ermsg;
 		}
@@ -119,7 +139,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 			if (nRet == SOCKET_ERROR)
 			{
 				char ermsg[1024] = { 0 };
-				sprintf_s(ermsg, "download %s,recv() error,error code : %d", sRemoteFilePath, WSAGetLastError());
+				sprintf_s(ermsg, "download %s,recv() error,error code : %d", sRemoteFilePath.c_str(), WSAGetLastError());
 				closesocket(Socket);
 				throw ermsg;
 			}
@@ -135,7 +155,7 @@ std::string YEELINK_READ::read_lastdata(int device_id, int sensor_id) {
 	}
 	catch (char* sErrMsg)
 	{
-		printf("error\n");
+		printf("error : %s\n",sErrMsg);
 
 		WSACleanup();
 	}

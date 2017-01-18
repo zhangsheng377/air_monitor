@@ -6,14 +6,12 @@
 #include <string>
 #include <iostream>
 
-#include "json\json.hpp"
 #include "yeelink_read\yeelink_read.hpp"
 
 
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
-using json = nlohmann::json;
 
 
 
@@ -27,16 +25,7 @@ int main()
 
 	//string str = GetHTTP("api.yeelink.net", 80, "http://api.yeelink.net/v1.0/device/353097/sensor/397985/datapoints");
 
-	double d1s1;
-	string str = YEELINK_READ::read_lastdata(353097, 397985);
-	if (!str.empty()) {
-		json jj= json::parse(str.c_str());
-		/*for (json::iterator it = j3.begin(); it != j3.end(); ++it) {
-			std::cout << it.key() << " : " << it.value() << "\n";
-		}*/
-		d1s1 = jj["value"];
-		//cout << d1s1 << endl;
-	}
+	double d1s1 = YEELINK_READ::read_lastvalue(353097, 397985);
 	cout << d1s1 << endl;
 
 	system("pause");
