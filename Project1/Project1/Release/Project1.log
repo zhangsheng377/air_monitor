@@ -1,8 +1,0 @@
-﻿  main.cpp
-/mnt/c/Users/43587/Desktop/code/air_monitor/Project1/Project1/json/json.tab.hh(63): error C2365: “BOOLEAN”: 重定义；以前的定义是“typedef”
-  C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(1042): note: 参见“BOOLEAN”的声明
-main.cpp(31): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-main.cpp(44): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-main.cpp(70): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-main.cpp(84): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
-main.cpp(98): warning C4477: “sprintf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“std::string”
