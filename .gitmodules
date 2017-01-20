@@ -1,3 +1,3 @@
-[submodule "yeelink_api"]
-	path = yeelink_api
+[submodule "display/yeelink_api"]
+	path = display/yeelink_api
 	url = C:\\Users\\43587\\Desktop\\code\\air_monitor\\display\\yeelink_api
