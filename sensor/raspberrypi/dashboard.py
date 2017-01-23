@@ -21,9 +21,9 @@ class DASHBOARD(pygame.sprite.Sprite):
         pygame.draw.circle(self.surface, color.grey, self.position, self.radius, self.line_width)
         self.surface.blit(self.text_index, self.position)
         pygame.draw.line(self.surface, color.red, (self.position[0] - self.radius, self.position[1]),
-                         (self.position[0] + self.radius, self.position[1]),2)
+                         (self.position[0] + self.radius, self.position[1]), 2)
         pygame.draw.line(self.surface, color.red, (self.position[0], self.position[1] - self.radius),
-                         (self.position[0], self.position[1] + self.radius),2)
+                         (self.position[0], self.position[1] + self.radius), 2)
 
         # def draw_blendcolor_arc(self,color_start,color_end,rect,angle_start,angle_stop):
         #   pygame

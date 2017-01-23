@@ -8,10 +8,15 @@ import wx
 
 pygame.init()
 pygame.display.set_caption("Demo")
-
+'''
 gap = (int(50 * wx.GetDisplaySize()[0] / max(wx.GetDisplaySize()[0], wx.GetDisplaySize()[1])),
        int(50 * wx.GetDisplaySize()[1] / max(wx.GetDisplaySize()[0], wx.GetDisplaySize()[1])))
 radius = max(gap[0],gap[1])*2
+size = (2 * gap[0] + 6 * radius, gap[1] + 4 * radius)
+'''
+size = wx.GetDisplaySize()
+gap = (int(size[0] / 14), int(size[1] / 9))
+radius = min(gap[0], gap[1]) * 2
 size = (2 * gap[0] + 6 * radius, gap[1] + 4 * radius)
 
 print  size
