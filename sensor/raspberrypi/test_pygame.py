@@ -13,6 +13,7 @@ try:
 
     size = wx.GetDisplaySize()
 except:
+    print "Can't find wxpython."
     size = pygame.display.list_modes()[len(pygame.display.list_modes()) / 2]
 
 gap = (int(size[0] / 14), int(size[1] / 9))
@@ -23,13 +24,15 @@ size = (2 * gap[0] + 6 * radius, gap[1] + 4 * radius)
 
 screen = pygame.display.set_mode(size, FULLSCREEN | HWSURFACE)
 
+color_bg=color.black
+
 x_mydashboard = 3
 y_mydashboard = 2
 mydashboard = []
 for y in range(0, y_mydashboard):
     for x in range(0, x_mydashboard):
         position = (radius + x * (gap[0] + 2 * radius), radius + y * (gap[1] + 2 * radius))
-        mydashboard.append(dashboard.DASHBOARD(screen, position, radius, x + y * x_mydashboard))
+        mydashboard.append(dashboard.DASHBOARD(screen, position, radius, x + y * x_mydashboard,color_bg))
 
 while True:
     for event in pygame.event.get():
@@ -39,7 +42,7 @@ while True:
             if event.key == K_ESCAPE:
                 sys.exit()
 
-    screen.fill(color.black)
+    screen.fill(color_bg)
 
     for i in range(0, x_mydashboard * y_mydashboard):
         mydashboard[i].draw()
