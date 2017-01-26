@@ -7,13 +7,12 @@ if ~pygame.font.get_init():
 
 
 class DASHBOARD(pygame.sprite.Sprite):
-    def __init__(self, surface, position, radius, index, color_bg):
+    def __init__(self, surface, position, radius, index, color_bg, least, highest):
         pygame.sprite.Sprite.__init__(self)
         self.surface = surface
         self.radius = radius
-        self.line_width = int(math.ceil(self.radius / 9))
+        self.line_width = int(math.ceil(self.radius / 9.0))
         self.gap = int(max(math.ceil(self.line_width / 5.0), 2))
-        # self.arc_width = int(math.ceil(self.line_width * 5))
         self.arc_width = self.line_width
         self.position = position
         self.index = index
@@ -21,18 +20,20 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.font = pygame.font.Font(None, self.font_width)
         self.rect = (self.position[0] - self.radius, self.position[1] - self.radius, self.radius * 2, self.radius * 2)
         self.color_bg = color_bg
+        self.least = least
+        self.highest = highest
+        self.scale_gap = int(self.gap / 4.0 * 3)
+        self.needle_length = self.radius - self.line_width - self.arc_width - self.font_width - (self.gap) * 5
+        self.needle_width = int(max(self.arc_width / 2.0, 4))
+        self.origin_radius = int(self.arc_width / 2.0)
+        self.origin_gap = int(self.scale_gap / 2.0)
 
-    def draw(self):
-        # pygame.draw.circle(self.surface, color.grey, self.position, self.radius, self.line_width)
+    def draw(self, value):
         self.draw_blendcolor_arc(self.radius, self.line_width, color.grey, color.grey, 0, 360, 20)
-        # text_index = self.font.render(str(self.index), True, color.red)
-        # self.surface.blit(self.text_index, self.position)
-        # pygame.draw.aaline(self.surface, color.red, (self.position[0] - self.radius, self.position[1]),(self.position[0] + self.radius, self.position[1]), 2)
-        # pygame.draw.aaline(self.surface, color.red, (self.position[0], self.position[1] - self.radius),(self.position[0], self.position[1] + self.radius), 2)
         self.draw_blendcolor_arc(self.radius - self.line_width - self.gap, self.arc_width, color.red, color.green, -60,
                                  232, 10)
-        # pygame.draw.rect(self.surface, color.red, self.rect, 4)
-        self.draw_scale(0, 360, self.line_width, self.color_bg, color.white)
+        self.draw_scale(self.least, self.highest, self.line_width, self.color_bg, color.white)
+        self.draw_needle(value, color.red)
 
     def draw_blendcolor_arc(self, radius, width, color_start, color_end, degree_start, degree_stop, step):
         color_gap = (color_end.r - color_start.r, color_end.g - color_start.g, color_end.b - color_start.b)
@@ -57,14 +58,25 @@ class DASHBOARD(pygame.sprite.Sprite):
             degree = 240 + i * (-30)
             rate_cos = math.cos(math.radians(degree))
             rate_sin = math.sin(math.radians(degree))
-            pygame.draw.aaline(self.surface, color_bg,
-                               (self.position[0] + rate_cos * self.radius, self.position[1] - rate_sin * self.radius), (
-                                   self.position[0] + rate_cos * (self.radius - width),
-                                   self.position[1] - rate_sin * (self.radius - width)), 0)
+            pygame.draw.line(self.surface, color_bg,
+                             (self.position[0] + rate_cos * self.radius, self.position[1] - rate_sin * self.radius), (
+                                 self.position[0] + rate_cos * (self.radius - width),
+                                 self.position[1] - rate_sin * (self.radius - width)), self.scale_gap)
             number = i * step + least
             rate_cos = math.cos(math.radians(degree + degree_offset_number[i]))
             rate_sin = math.sin(math.radians(degree + degree_offset_number[i]))
             text_number = self.font.render(str(number), True, color_number)
             radius_number = self.radius - self.line_width - self.arc_width - (self.gap) * 2 - gap_number[i]
             self.surface.blit(text_number, (
-            self.position[0] + rate_cos * radius_number, self.position[1] - rate_sin * radius_number))
+                self.position[0] + rate_cos * radius_number, self.position[1] - rate_sin * radius_number))
+
+    def draw_needle(self, value, color_needle):
+        degree = 240 - (value - self.least) * 1.0 / (self.highest - self.least) * 360
+        rate_cos = math.cos(math.radians(degree))
+        rate_sin = math.sin(math.radians(degree))
+        position_end = (
+        int(self.position[0] + rate_cos * self.needle_length), int(self.position[1] - rate_sin * self.needle_length))
+        pygame.draw.line(self.surface, color_needle, self.position, position_end, self.needle_width)
+        pygame.draw.circle(self.surface, color_needle, position_end, int(self.needle_width / 24.0 * 14), 0)
+        pygame.draw.circle(self.surface, color.white, self.position, self.origin_radius, 0)
+        pygame.draw.circle(self.surface, self.color_bg, self.position, self.origin_radius - self.origin_gap, 1)
