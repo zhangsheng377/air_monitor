@@ -75,7 +75,8 @@ class DASHBOARD(pygame.sprite.Sprite):
         rate_cos = math.cos(math.radians(degree))
         rate_sin = math.sin(math.radians(degree))
         position_end = (
-        int(self.position[0] + rate_cos * self.needle_length), int(self.position[1] - rate_sin * self.needle_length))
+            int(self.position[0] + rate_cos * self.needle_length),
+            int(self.position[1] - rate_sin * self.needle_length))
         pygame.draw.line(self.surface, color_needle, self.position, position_end, self.needle_width)
         pygame.draw.circle(self.surface, color_needle, position_end, int(self.needle_width / 24.0 * 14), 0)
         pygame.draw.circle(self.surface, color.white, self.position, self.origin_radius, 0)
