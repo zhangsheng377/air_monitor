@@ -6,6 +6,8 @@ import json
 import StringIO
 import smbus
 
+_DEBUG_=False
+
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11,GPIO.OUT)
 
@@ -25,19 +27,6 @@ A2 = 0x42
 A3 = 0x43
 bus = smbus.SMBus(1)
 
-#username='zhangsheng377'
-#password='bz292929'
-#response = StringIO.StringIO()
-#mycurl=pycurl.Curl()
-#mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/user/apikey?username='+username+'&pass='+password)
-#mycurl.setopt(mycurl.WRITEFUNCTION, response.write)
-#mycurl.perform()
-##response=mycurl.getinfo(mycurl.RESPONSE_CODE)
-#myresp=json.loads(response.getvalue())
-#if myresp['errcode']=='0':
-#     apikey=myresp['apikey']
-#     print apikey
-#mycurl.close()
 apikey="779bfd896876dc377d3ed78d0fa1dbf4"
 
 device_id='353097'
@@ -79,28 +68,30 @@ while True:
                                    Ud=1.0*A*Vout
                                    if Ud>0:
                                         print "pm2.5 :",Ud
-                                        mycurl=pycurl.Curl()
-                                        mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_pm25_id+'/datapoints')
-                                        mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
-                                        mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":Ud}))
-                                        try:
-                                             mycurl.perform()
-                                        except Exception,e:
-                                             print Exception,":",e
-                                        mycurl.close()
+                                        if _DEBUG_==False:
+                                             mycurl=pycurl.Curl()
+                                             mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_pm25_id+'/datapoints')
+                                             mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
+                                             mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":Ud}))
+                                             try:
+                                                  mycurl.perform()
+                                             except Exception,e:
+                                                  print Exception,":",e
+                                             mycurl.close()
 
                                         bus.write_byte(address,A0)
                                         value_CO = bus.read_byte(address)*1.0/256*1000
                                         print "CO :",value_CO
-                                        mycurl=pycurl.Curl()
-                                        mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_CO_id+'/datapoints')
-                                        mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
-                                        mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":value_CO}))
-                                        try:
-                                             mycurl.perform()
-                                        except Exception,e:
-                                             print Exception,":",e
-                                        mycurl.close()
+                                        if _DEBUG_==False:
+                                             mycurl=pycurl.Curl()
+                                             mycurl.setopt(mycurl.URL,'http://api.yeelink.net/v1.0/device/'+device_id+'/sensor/'+sensor_CO_id+'/datapoints')
+                                             mycurl.setopt(mycurl.HTTPHEADER,["U-ApiKey:"+apikey])
+                                             mycurl.setopt(mycurl.POSTFIELDS,json.dumps({"value":value_CO}))
+                                             try:
+                                                  mycurl.perform()
+                                             except Exception,e:
+                                                  print Exception,":",e
+                                             mycurl.close()
 
                                         
                                         break
