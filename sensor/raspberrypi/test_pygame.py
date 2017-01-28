@@ -5,10 +5,13 @@ from pygame.locals import *
 import dashboard
 import color
 import random
+from time import time
+
+time_old = time()
 
 pygame.init()
 pygame.display.set_caption("Demo")
-clock=pygame.time.Clock()
+clock = pygame.time.Clock()
 
 try:
     import wx
@@ -44,11 +47,16 @@ while True:
             if event.key == K_ESCAPE:
                 sys.exit()
 
+    time_now = time()
+    if time_now - time_old > 15:
+        print "tick", time_now - time_old
+        time_old = time_now
+
     screen.fill(color_bg)
 
     for i in range(0, x_mydashboard * y_mydashboard):
         mydashboard[i].draw(random.uniform(0, 1000))
 
     pygame.display.flip()
-    #pygame.time.delay(100)
-    clock.tick(5)
+    # pygame.time.delay(100)
+    clock.tick(10)
