@@ -29,10 +29,11 @@ def read_pm25():
     Vret_L = 0
     check = 0
     waitlen = sensor_config.serial_0.inWaiting()
-    print "waitlen : sensor_api", waitlen
+    #print "waitlen : sensor_api", waitlen
     if waitlen != 0:
         recv = sensor_config.serial_0.read(waitlen)
         listhex = [ord(i) for i in recv]
+        #print listhex
         count = 0
         for i in range(len(listhex)):
             if count == 0:
@@ -78,7 +79,7 @@ def read_CO():
 
 def read_SO2():
     sensor_config.bus.write_byte(sensor_config.address, sensor_config.A1)
-    value_SO2 = sensor_config.bus.read_byte(sensor_config.address) * 1.0 / 256 * 1000
+    value_SO2 = sensor_config.bus.read_byte(sensor_config.address) * 1.0 / 256 * 500
     if value_SO2 > 0:
         return value_SO2
     else:

@@ -29,5 +29,7 @@ while True:
         if not _DEBUG_:
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), value_SO2)
 
+    print ""
+
     # print "sleep"
     time.sleep(15)
