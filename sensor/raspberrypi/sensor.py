@@ -8,9 +8,6 @@ _DEBUG_ = False
 MYID = 1
 yeelink_config.init(MYID)
 
-serial_name_0 = "/dev/ttyS0"
-sensor_api.init(serial_name_0)
-
 while True:
     value_pm25 = sensor_api.read_pm25()
     if Ud > 0:
@@ -33,4 +30,4 @@ while True:
 
 
             # print "sleep"
-time.sleep(15)
+    time.sleep(15)

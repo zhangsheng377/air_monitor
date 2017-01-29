@@ -14,11 +14,7 @@ A2 = 0x42
 A3 = 0x43
 bus = smbus.SMBus(1)
 
-serial_0 = None
-
-
-def init(serial_name_0):
-    serial_0 = serial.Serial(serial_name_0, 2400)
+serial_0 = serial.Serial("/dev/ttyS0", 2400)
 
 
 def read_pm25():
