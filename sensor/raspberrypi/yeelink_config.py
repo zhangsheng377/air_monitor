@@ -1,4 +1,5 @@
 apikey = "779bfd896876dc377d3ed78d0fa1dbf4"
+MYID = 0
 
 
 def init(myid):
