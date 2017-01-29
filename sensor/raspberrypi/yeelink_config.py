@@ -1,30 +1,35 @@
 apikey = "779bfd896876dc377d3ed78d0fa1dbf4"
 
+device_id = ''
+sensor_pm25_id = ''
+sensor_CO_id = ''
+sensor_SO2_id = ''
+
 
 def init(myid):
     if myid == 0:
-        self.device_id = '353097'
-        self.sensor_pm25_id = '397985'
-        self.sensor_CO_id = '398391'
-        self.sensor_SO2_id = '400110'
+        device_id = '353097'
+        sensor_pm25_id = '397985'
+        sensor_CO_id = '398391'
+        sensor_SO2_id = '400110'
     elif myid == 1:
-        self.device_id = '354298'
-        self.sensor_pm25_id = '400108'
-        self.sensor_CO_id = '400109'
-        self.sensor_SO2_id = '400111'
+        device_id = '354298'
+        sensor_pm25_id = '400108'
+        sensor_CO_id = '400109'
+        sensor_SO2_id = '400111'
 
 
 def device_id():
-    return self.device_id
+    return device_id
 
 
 def sensor_pm25_id():
-    return self.sensor_pm25_id
+    return sensor_pm25_id
 
 
 def sensor_CO_id():
-    return self.sensor_CO_id
+    return sensor_CO_id
 
 
 def sensor_SO2_id():
-    return self.sensor_SO2_id
+    return sensor_SO2_id
