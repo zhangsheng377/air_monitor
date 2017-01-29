@@ -27,7 +27,7 @@ A2 = 0x42
 A3 = 0x43
 bus = smbus.SMBus(1)
 
-MYID = 0
+MYID = 1
 import yeelink_config
 
 yeelink_config.init(MYID)
