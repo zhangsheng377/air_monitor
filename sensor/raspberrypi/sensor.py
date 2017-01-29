@@ -30,6 +30,8 @@ bus = smbus.SMBus(1)
 MYID = 0
 import yeelink_config
 
+yeelink_config.init(MYID)
+
 while True:
     waitlen = serial0.inWaiting()
     if waitlen != 0:
@@ -68,8 +70,8 @@ while True:
                                 if not _DEBUG_:
                                     mycurl = pycurl.Curl()
                                     mycurl.setopt(mycurl.URL,
-                                                  'http://api.yeelink.net/v1.0/device/' + device_id + '/sensor/' + sensor_pm25_id + '/datapoints')
-                                    mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + apikey])
+                                                  'http://api.yeelink.net/v1.0/device/' + yeelink_config.device_id + '/sensor/' + yeelink_config.sensor_pm25_id + '/datapoints')
+                                    mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + yeelink_config.apikey])
                                     mycurl.setopt(mycurl.POSTFIELDS, json.dumps({"value": Ud}))
                                     try:
                                         mycurl.perform()
@@ -83,8 +85,8 @@ while True:
                                 if not _DEBUG_:
                                     mycurl = pycurl.Curl()
                                     mycurl.setopt(mycurl.URL,
-                                                  'http://api.yeelink.net/v1.0/device/' + device_id + '/sensor/' + sensor_CO_id + '/datapoints')
-                                    mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + apikey])
+                                                  'http://api.yeelink.net/v1.0/device/' + yeelink_config.device_id + '/sensor/' + yeelink_config.sensor_CO_id + '/datapoints')
+                                    mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + yeelink_config.apikey])
                                     mycurl.setopt(mycurl.POSTFIELDS, json.dumps({"value": value_CO}))
                                     try:
                                         mycurl.perform()
