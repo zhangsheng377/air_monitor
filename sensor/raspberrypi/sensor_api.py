@@ -14,7 +14,7 @@ A2 = 0x42
 A3 = 0x43
 bus = smbus.SMBus(1)
 
-serial_0 = null
+serial_0 = None
 
 
 def init(serial_name_0):
