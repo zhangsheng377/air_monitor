@@ -1,5 +1,6 @@
 import pycurl
 import json
+import StringIO
 
 apikey = ''
 

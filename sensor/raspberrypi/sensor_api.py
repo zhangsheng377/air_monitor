@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 import serial
-import StringIO
 import smbus
 
 GPIO.setmode(GPIO.BOARD)
