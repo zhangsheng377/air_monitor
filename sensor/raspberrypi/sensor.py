@@ -27,11 +27,8 @@ A2 = 0x42
 A3 = 0x43
 bus = smbus.SMBus(1)
 
-apikey = "779bfd896876dc377d3ed78d0fa1dbf4"
-
-device_id = '353097'
-sensor_pm25_id = '397985'
-sensor_CO_id = '398391'
+MYID = 0
+import yeelink_config
 
 while True:
     waitlen = serial0.inWaiting()
