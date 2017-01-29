@@ -10,8 +10,8 @@ yeelink_config.init(MYID)
 
 while True:
     value_pm25 = sensor_api.read_pm25()
-    if Ud > 0:
-        print "pm2.5 :", Ud
+    if value_pm25 > 0:
+        print "pm2.5 :", value_pm25
         if not _DEBUG_:
             yeelink_api.send_value(yeelink_config.device_id(), yeelink_config.sensor_pm25_id(), value_pm25)
 
@@ -27,7 +27,5 @@ while True:
         if not _DEBUG_:
             yeelink_api.send_value(yeelink_config.device_id(), yeelink_config.sensor_SO2_id(), value_SO2)
 
-
-
-            # print "sleep"
+    # print "sleep"
     time.sleep(15)
