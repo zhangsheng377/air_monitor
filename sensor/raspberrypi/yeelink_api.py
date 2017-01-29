@@ -1,9 +1,11 @@
 import pycurl
 import json
 
+apikey = ''
+
 
 def init(apikey):
-    self.apikey = apikey
+    apikey = apikey
 
 
 def send_value(device_id, sensor_id, value):
