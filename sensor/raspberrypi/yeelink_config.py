@@ -21,19 +21,23 @@ def init(myid):
 
 def device_id():
     result = device_id
+    print "device_id : ", result
     return result
 
 
 def sensor_pm25_id():
     result = sensor_pm25_id
+    print "sensor_pm25_id : ", result
     return result
 
 
 def sensor_CO_id():
     result = sensor_CO_id
+    print "sensor_CO_id : ", result
     return result
 
 
 def sensor_SO2_id():
     result = sensor_SO2_id
+    print "sensor_SO2_id : ", result
     return result
