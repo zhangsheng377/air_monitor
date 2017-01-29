@@ -94,6 +94,21 @@ while True:
                                         print Exception, ":", e
                                     mycurl.close()
 
+                                bus.write_byte(address, A1)
+                                value_SO2 = bus.read_byte(address) * 1.0 / 256 * 1000
+                                print "SO2 :", value_SO2
+                                if not _DEBUG_:
+                                    mycurl = pycurl.Curl()
+                                    mycurl.setopt(mycurl.URL,
+                                                  'http://api.yeelink.net/v1.0/device/' + yeelink_config.device_id + '/sensor/' + yeelink_config.sensor_SO2_id + '/datapoints')
+                                    mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + yeelink_config.apikey])
+                                    mycurl.setopt(mycurl.POSTFIELDS, json.dumps({"value": value_SO2}))
+                                    try:
+                                        mycurl.perform()
+                                    except Exception, e:
+                                        print Exception, ":", e
+                                    mycurl.close()
+
                                 break
     # serial0.flushInput()
     # print "sleep"
