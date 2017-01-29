@@ -20,16 +20,20 @@ def init(myid):
 
 
 def device_id():
-    return device_id
+    result = device_id
+    return result
 
 
 def sensor_pm25_id():
-    return sensor_pm25_id
+    result = sensor_pm25_id
+    return result
 
 
 def sensor_CO_id():
-    return sensor_CO_id
+    result = sensor_CO_id
+    return result
 
 
 def sensor_SO2_id():
-    return sensor_SO2_id
+    result = sensor_SO2_id
+    return result
