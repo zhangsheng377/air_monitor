@@ -16,7 +16,7 @@ def send_value(device_id, sensor_id, value):
     mycurl.setopt(mycurl.HTTPHEADER, ["U-ApiKey:" + apikey])
     mycurl.setopt(mycurl.POSTFIELDS, json.dumps({"value": value}))
     try:
-        print mycurl.URL
+        print 'http://api.yeelink.net/v1.0/device/' + str(device_id) + '/sensor/' + str(sensor_id) + '/datapoints'
         print "mycurl perform start : yeelink_api send_value"
         mycurl.perform()
         print "mycurl perform end : yeelink_api send_value"
