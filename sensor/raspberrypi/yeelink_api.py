@@ -10,6 +10,7 @@ def init(apikey):
 
 
 def send_value(device_id, sensor_id, value):
+    print device_id, sensor_id, value
     mycurl = pycurl.Curl()
     mycurl.setopt(mycurl.URL,
                   'http://api.yeelink.net/v1.0/device/' + device_id + '/sensor/' + sensor_id + '/datapoints')
