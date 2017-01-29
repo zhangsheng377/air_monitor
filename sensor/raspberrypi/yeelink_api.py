@@ -18,5 +18,6 @@ def send_value(device_id, sensor_id, value):
     try:
         mycurl.perform()
     except Exception, e:
-        print Exception, ":", e
+        # print Exception, ":", e
+        print "error : yeelink_api send_value"
     mycurl.close()
