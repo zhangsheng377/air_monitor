@@ -1,11 +1,9 @@
-apikey = "779bfd896876dc377d3ed78d0fa1dbf4"
-
-
 class MYCONFIG():
     device_id = ''
     sensor_pm25_id = ''
     sensor_CO_id = ''
     sensor_SO2_id = ''
+    apikey = "779bfd896876dc377d3ed78d0fa1dbf4"
 
 
 myconfig = MYCONFIG()
@@ -24,25 +22,21 @@ def init(myid):
         myconfig.sensor_SO2_id = '400111'
 
 
+def apikey():
+    return myconfig.apikey
+
+
 def device_id():
-    result = myconfig.device_id
-    print "device_id : ", result
-    return result
+    return myconfig.device_id
 
 
 def sensor_pm25_id():
-    result = myconfig.sensor_pm25_id
-    print "sensor_pm25_id : ", result
-    return result
+    return myconfig.sensor_pm25_id
 
 
 def sensor_CO_id():
-    result = myconfig.sensor_CO_id
-    print "sensor_CO_id : ", result
-    return result
+    return myconfig.sensor_CO_id
 
 
 def sensor_SO2_id():
-    result = myconfig.sensor_SO2_id
-    print "sensor_SO2_id : ", result
-    return result
+    return myconfig.sensor_SO2_id

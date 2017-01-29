@@ -2,18 +2,23 @@ import RPi.GPIO as GPIO
 import serial
 import smbus
 
-GPIO.setmode(GPIO.BOARD)
 
-A = 1200
+class SENSOR_CONFIG():
+    serial_0 = serial.Serial("/dev/ttyS0", 2400)
+    A = 1200
 
-address = 0x48
-A0 = 0x40
-A1 = 0x41
-A2 = 0x42
-A3 = 0x43
-bus = smbus.SMBus(1)
+    address = 0x48
+    A0 = 0x40
+    A1 = 0x41
+    A2 = 0x42
+    A3 = 0x43
 
-serial_0 = serial.Serial("/dev/ttyS0", 2400)
+    bus = smbus.SMBus(1)
+
+    GPIO.setmode(GPIO.BOARD)
+
+
+sensor_config = SENSOR_CONFIG()
 
 
 def read_pm25():
@@ -23,9 +28,10 @@ def read_pm25():
     Vret_H = 0
     Vret_L = 0
     check = 0
-    waitlen = serial_0.inWaiting()
+    waitlen = sensor_config.serial_0.inWaiting()
+    print "waitlen : sensor_api", waitlen
     if waitlen != 0:
-        recv = serial_0.read(waitlen)
+        recv = sensor_config.serial_0.read(waitlen)
         listhex = [ord(i) for i in recv]
         count = 0
         for i in range(len(listhex)):
@@ -54,7 +60,7 @@ def read_pm25():
                     if listhex[i] == 255:
                         if check == (Vout_H + Vout_L + Vret_H + Vret_L) % 256:
                             Vout = (Vout_H * 256 + Vout_L) * 1.0 / 1024 * 5
-                            Ud = 1.0 * A * Vout
+                            Ud = 1.0 * sensor_config.A * Vout
                             if Ud > 0:
                                 result = Ud
                                 break
@@ -62,8 +68,8 @@ def read_pm25():
 
 
 def read_CO():
-    bus.write_byte(address, A0)
-    value_CO = bus.read_byte(address) * 1.0 / 256 * 1000
+    sensor_config.bus.write_byte(sensor_config.address, sensor_config.A0)
+    value_CO = sensor_config.bus.read_byte(sensor_config.address) * 1.0 / 256 * 1000
     if value_CO > 0:
         return value_CO
     else:
@@ -71,8 +77,8 @@ def read_CO():
 
 
 def read_SO2():
-    bus.write_byte(address, A1)
-    value_SO2 = bus.read_byte(address) * 1.0 / 256 * 1000
+    sensor_config.bus.write_byte(sensor_config.address, sensor_config.A1)
+    value_SO2 = sensor_config.bus.read_byte(sensor_config.address) * 1.0 / 256 * 1000
     if value_SO2 > 0:
         return value_SO2
     else:
