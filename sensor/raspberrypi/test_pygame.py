@@ -34,10 +34,14 @@ color_bg = color.black
 x_mydashboard = 3
 y_mydashboard = 2
 mydashboard = []
+
+names = ['PM2.5', 'CO', 'SO2', 'O3', 'xx0', 'xx1']
+
 for y in range(0, y_mydashboard):
     for x in range(0, x_mydashboard):
         position = (radius + x * (gap[0] + 2 * radius), radius + y * (gap[1] + 2 * radius))
-        mydashboard.append(dashboard.DASHBOARD(screen, position, radius, x + y * x_mydashboard, color_bg, 0, 1000))
+        mydashboard.append(
+            dashboard.DASHBOARD(screen, position, radius, names[x + y * x_mydashboard], color_bg, 0, 1000))
 
 while True:
     for event in pygame.event.get():

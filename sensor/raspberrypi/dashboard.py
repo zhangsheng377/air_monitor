@@ -7,7 +7,7 @@ if ~pygame.font.get_init():
 
 
 class DASHBOARD(pygame.sprite.Sprite):
-    def __init__(self, surface, position, radius, index, color_bg, least, highest):
+    def __init__(self, surface, position, radius, name, color_bg, least, highest):
         pygame.sprite.Sprite.__init__(self)
         self.surface = surface
         self.radius = radius
@@ -15,13 +15,13 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.gap = int(max(math.ceil(self.line_width / 5.0), 2))
         self.arc_width = self.line_width
         self.position = position
-        self.index = index
+        self.name = name
         self.font_width = int(self.arc_width * 1.5)
         self.font = pygame.font.Font(None, self.font_width)
         self.rect = (self.position[0] - self.radius, self.position[1] - self.radius, self.radius * 2, self.radius * 2)
         self.color_bg = color_bg
         self.least = least
-        self.highest = highest
+        self.highest = int(highest / 10.0 * 12)
         self.scale_gap = int(self.gap / 4.0 * 3)
         self.needle_length = self.radius - self.line_width - self.arc_width - self.font_width - (self.gap) * 5
         self.needle_width = int(max(self.arc_width / 2.0, 4))
@@ -34,6 +34,15 @@ class DASHBOARD(pygame.sprite.Sprite):
                                  232, 10)
         self.draw_scale(self.least, self.highest, self.line_width, self.color_bg, color.white)
         self.draw_needle(value, color.red)
+
+        text_value = self.font.render("%.2f" % value, True, color.blue)
+        distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width * 2 - (self.gap) * 6
+        self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
+
+        text_name = self.font.render(str(self.name), True, color.blue)
+        distance_text_name = self.radius - self.line_width - self.gap - self.font_width
+        self.surface.blit(text_name, (
+        self.position[0] - len(self.name) * self.font_width / 4, self.position[1] + distance_text_name))
 
     def draw_blendcolor_arc(self, radius, width, color_start, color_end, degree_start, degree_stop, step):
         color_gap = (color_end.r - color_start.r, color_end.g - color_start.g, color_end.b - color_start.b)
