@@ -35,14 +35,17 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.draw_scale(self.least, self.highest, self.line_width, self.color_bg, color.white)
         self.draw_needle(value, color.red)
 
-        text_value = self.font.render("%.2f" % value, True, color.blue)
+        str_value = "%.2f" % value
+        text_value = self.font.render(str_value, True, color.blue)
         distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width * 2 - (self.gap) * 6
-        self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
+        # self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
+        self.surface.blit(text_value, (
+            self.position[0] - len(str_value) * self.font_width / 6, self.position[1] + distance_text_value))
 
         text_name = self.font.render(str(self.name), True, color.blue)
         distance_text_name = self.radius - self.line_width - self.gap - self.font_width
         self.surface.blit(text_name, (
-        self.position[0] - len(self.name) * self.font_width / 4, self.position[1] + distance_text_name))
+            self.position[0] - len(self.name) * self.font_width / 5, self.position[1] + distance_text_name))
 
     def draw_blendcolor_arc(self, radius, width, color_start, color_end, degree_start, degree_stop, step):
         color_gap = (color_end.r - color_start.r, color_end.g - color_start.g, color_end.b - color_start.b)

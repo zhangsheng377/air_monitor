@@ -63,4 +63,4 @@ while True:
 
     pygame.display.flip()
     # pygame.time.delay(100)
-    clock.tick(10)
+    clock.tick(5)
