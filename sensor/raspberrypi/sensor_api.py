@@ -33,7 +33,7 @@ def read_pm25():
     if waitlen != 0:
         recv = sensor_config.serial_0.read(waitlen)
         listhex = [ord(i) for i in recv]
-        # print listhex
+        print listhex
         count = 0
         for i in range(len(listhex)):
             if count == 0:

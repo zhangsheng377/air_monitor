@@ -3,7 +3,7 @@ import sensor_api
 import yeelink_config
 import yeelink_api
 
-_DEBUG_ = False
+_DEBUG_ = True
 
 MYID = 1
 yeelink_config.init(MYID)
