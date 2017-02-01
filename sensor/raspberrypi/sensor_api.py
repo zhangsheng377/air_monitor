@@ -70,10 +70,10 @@ def read_pm25():
                         if check == (Vout_H + Vout_L + Vret_H + Vret_L) % 256:
                             Vout = (Vout_H * 256 + Vout_L) * 1.0 / 1024 * 5
                             Ud = 1.0 * sensor_config.A * Vout
+                            if _DEBUG_:
+                                print Vout, Ud
                             if Ud > 0:
                                 result = Ud
-                                if _DEBUG_:
-                                    print result
                                 break
                     i = old_i + 1
     return result
