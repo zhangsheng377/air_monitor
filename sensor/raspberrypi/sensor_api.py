@@ -2,6 +2,8 @@ import RPi.GPIO as GPIO
 import serial
 import smbus
 
+_DEBUG_ = True
+
 
 class SENSOR_CONFIG():
     serial_0 = serial.Serial("/dev/ttyS0", 2400)
@@ -29,11 +31,13 @@ def read_pm25():
     Vret_L = 0
     check = 0
     waitlen = sensor_config.serial_0.inWaiting()
-    # print "waitlen : sensor_api", waitlen
+    if _DEBUG_:
+        print "waitlen : sensor_api", waitlen
     if waitlen != 0:
         recv = sensor_config.serial_0.read(waitlen)
         listhex = [ord(i) for i in recv]
-        print listhex
+        if _DEBUG_:
+            print listhex
         count = 0
         for i in range(len(listhex)):
             if count == 0:
