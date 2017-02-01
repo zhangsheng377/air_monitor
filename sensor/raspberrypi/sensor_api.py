@@ -39,9 +39,11 @@ def read_pm25():
         if _DEBUG_:
             print listhex
         count = 0
+        old_i = 0
         for i in range(len(listhex)):
             if count == 0:
                 if listhex[i] == 170:
+                    old_i = i + 1
                     count += 1
                     Vout_H = 0
                     Vout_L = 0
@@ -69,6 +71,7 @@ def read_pm25():
                             if Ud > 0:
                                 result = Ud
                                 break
+                    i = old_i
     return result
 
 
