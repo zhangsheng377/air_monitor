@@ -43,7 +43,7 @@ def read_pm25():
         for i in range(len(listhex)):
             if count == 0:
                 if listhex[i] == 170:
-                    old_i = i + 1
+                    old_i = i
                     count += 1
                     Vout_H = 0
                     Vout_L = 0
@@ -64,6 +64,7 @@ def read_pm25():
                     check = listhex[i]
                 elif count == 7:
                     count = 0
+                    print Vout_H, Vout_L, Vret_H, Vret_L, check, listhex[i]
                     if listhex[i] == 255:
                         if check == (Vout_H + Vout_L + Vret_H + Vret_L) % 256:
                             Vout = (Vout_H * 256 + Vout_L) * 1.0 / 1024 * 5
@@ -71,7 +72,7 @@ def read_pm25():
                             if Ud > 0:
                                 result = Ud
                                 break
-                    i = old_i
+                    i = old_i + 1
     return result
 
 
