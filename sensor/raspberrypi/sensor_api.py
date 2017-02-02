@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import serial
 import smbus
 
-_DEBUG_ = True
+_DEBUG_ = False
 
 
 class SENSOR_CONFIG():
