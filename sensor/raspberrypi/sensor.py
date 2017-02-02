@@ -48,13 +48,22 @@ y_mydashboard = 2
 mydashboard = {}
 values = {}
 names = ['PM2.5', 'CO', 'SO2', 'O3', 'xx0', 'xx1']
+values_range = {}
+values_range[names[0]] = (0, 500)
+values_range[names[1]] = (0, 100)
+values_range[names[2]] = (0, 50)
+values_range[names[3]] = (0, 50)
+values_range[names[4]] = (0, 1000)
+values_range[names[5]] = (0, 1000)
 
 for y in range(0, y_mydashboard):
     for x in range(0, x_mydashboard):
         position = (radius + x * (gap[0] + 2 * radius), radius + y * (gap[1] + 2 * radius))
         # mydashboard.append(dashboard.DASHBOARD(screen, position, radius, names[x + y * x_mydashboard], color_bg, 0, 1000))
         mydashboard[names[x + y * x_mydashboard]] = dashboard.DASHBOARD(screen, position, radius,
-                                                                        names[x + y * x_mydashboard], color_bg, 0, 1000)
+                                                                        names[x + y * x_mydashboard], color_bg,
+                                                                        values_range[names[x + y * x_mydashboard]][0],
+                                                                        values_range[names[x + y * x_mydashboard]][1])
         values[names[x + y * x_mydashboard]] = 0.0
 
 while True:
