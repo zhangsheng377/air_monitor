@@ -50,7 +50,7 @@ values = {}
 names = ['PM2.5', 'CO', 'SO2', 'O3', 'xx0', 'xx1']
 values_range = {}
 values_range[names[0]] = (0, 500)
-values_range[names[1]] = (0, 100)
+values_range[names[1]] = (0, 200)
 values_range[names[2]] = (0, 50)
 values_range[names[3]] = (0, 50)
 values_range[names[4]] = (0, 1000)
@@ -114,4 +114,4 @@ while True:
             mydashboard[names[x + y * x_mydashboard]].draw(values[names[x + y * x_mydashboard]])
 
     pygame.display.flip()
-    clock.tick(5)
+    clock.tick(10)
