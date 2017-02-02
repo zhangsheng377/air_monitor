@@ -12,7 +12,7 @@ import color
 import random
 from time import time
 
-_DEBUG_ = False
+_DEBUG_ = True
 
 MYID = 1
 yeelink_config.init(MYID)
