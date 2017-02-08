@@ -25,6 +25,9 @@ class wechatCallbackapiTest
         }
     }
 
+    /**
+     *
+     */
     public function responseMsg()
     {
 		//get post data, May be due to the different environments
@@ -52,10 +55,14 @@ class wechatCallbackapiTest
                 {
               		$msgType = "text";
 
-					$device_id='353097';
-					$sensor_id='397985';
-					$contentStr=file_get_contents('http://api.yeelink.net/v1.0/device/353097/sensor/397985/datapoints');
-
+					$device_id=353097;
+					$sensor_id=397985;
+					$data=file_get_contents('http://api.yeelink.net/v1.0/device/'.$device_id.'/sensor/'.$sensor_id.'/datapoints');
+                    //$data_json=json_decode($data,true);
+                    //$contentStr='传感器报警！当前数值为 : '.$data_json["value"];
+                    $data_json=json_decode($data);
+                    $contentStr='传感器报警！当前数值为 : '.$data_json->value;
+                    
                 	$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 	echo $resultStr;
                 }else{
@@ -96,8 +103,8 @@ class wechatCallbackapiTest
 	function curl_file_get_contents($durl){  
     	$ch = curl_init();  
     	curl_setopt($ch, CURLOPT_URL, $durl);  
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 获取数据返回    
-    	curl_setopt($ch, CURLOPT_BINARYTRANSFER, true); // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回    
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 获取数据返回    
+    	curl_setopt($ch, CURLOPT_BINARYTRANSFER, true); // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回    
     	$r = curl_exec($ch);  
     	curl_close($ch);  
     	return $r;  
