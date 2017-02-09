@@ -5,12 +5,20 @@
  * Date: 2017/2/9,0009
  * Time: 01:17
  */
-$device_id = 353097;
-$sensor_id = 397985;
-$durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
-$data = file_get_contents($durl);
-$data_json = json_decode($data);
-$contentStr = 'value : ' . $data_json->value;
-echo $contentStr
+
+$file_name="access_token.dat";
+$file=fopen($file_name,"wb");
+fwrite($file,"sfdsf");
+fwrite($file,"\t");
+fwrite($file,123);
+fclose($file);
+
+$access_token = "";
+$time_expires_in = -1;
+$file_read=fopen($file_name,"rb");
+$data=fscanf($file_read,"%s\t%d");
+fclose($file_read);
+print $data[0];
+print $data[1]+1;
 
 ?>
