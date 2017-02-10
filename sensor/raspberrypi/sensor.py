@@ -76,17 +76,17 @@ while True:
 
     value_CO = sensor_api.read_CO()
     if value_CO > 0:
-        print "CO :", value_CO
+        # print "CO :", value_CO
         values['CO'] = value_CO
 
     value_SO2 = sensor_api.read_SO2()
     if value_SO2 > 0:
-        print "SO2 :", value_SO2
+        # print "SO2 :", value_SO2
         values['SO2'] = value_SO2
 
     value_O3 = sensor_api.read_O3()
     if value_O3 > 0:
-        print "O3 :", value_O3
+        # print "O3 :", value_O3
         values['O3'] = value_O3
 
     time_now = time()
@@ -96,16 +96,17 @@ while True:
 
         value_pm25 = sensor_api.read_pm25()
         if value_pm25 > 0:
-            print "pm2.5 :", value_pm25
+            # print "pm2.5 :", value_pm25
             values['PM2.5'] = value_pm25
 
         if not _DEBUG_:
+            print "send value", values['CO'], values['SO2']
             # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
             # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
 
-        print ""
+            # print ""
 
     screen.fill(color_bg)
 
