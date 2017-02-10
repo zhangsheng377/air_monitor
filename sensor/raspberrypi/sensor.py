@@ -12,7 +12,7 @@ import color
 import random
 from time import time
 
-_DEBUG_ = True
+_DEBUG_ = False
 
 MYID = 1
 yeelink_config.init(MYID)
@@ -100,10 +100,10 @@ while True:
             values['PM2.5'] = value_pm25
 
         if not _DEBUG_:
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
+            # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+            # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
 
         print ""
 
