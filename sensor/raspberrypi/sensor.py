@@ -12,6 +12,8 @@ import color
 import random
 from time import time
 
+import pycurl
+
 _DEBUG_ = False
 
 MYID = 1
@@ -105,6 +107,14 @@ while True:
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
             # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+
+            mycurl = pycurl.Curl()
+            mycurl.setopt(mycurl.URL, 'http://www.zhangshengdong.com/weixin/warningtemplate.php')
+            try:
+                mycurl.perform()
+            except Exception, e:
+                print Exception, ":", e
+            mycurl.close()
 
             # print ""
 

@@ -5,30 +5,67 @@
  * Date: 2017/2/10,0010
  * Time: 19:30
  */
+$data_return_0 = ignore_user_abort(true);
+$data_return_1 = ini_set('max_execution_time', '0');
+$data_return_2 = set_time_limit(0);
+$file_write = fopen("data_return.dat", "wb");
+fwrite($file_write, $data_return_0);
+fwrite($file_write, "\n");
+fwrite($file_write, $data_return_1);
+fwrite($file_write, "\n");
+fwrite($file_write, $data_return_2);
+fclose($file_write);
+
+$can_scanf = false;
+$file_name = "can_scanf";
 $access_token = "";
 $time_expires_in = -1;
 
-update_access_token();
+$file_read = fopen($file_name, "rb");
+$temp_data = fscanf($file_read, "%d");
+echo "temp_data:$temp_data[0]\n\r\n";
+if ($temp_data[0] > 0) {
+    $can_scanf = true;
+}
+fclose($file_read);
 
-$device_id = 354298;
-$sensor_id = 400111;
-$durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
-$data = curl_request($durl);
-$data_json = json_decode($data, true);
-$value = $data_json["value"];
+$time_old = time();
+while ($can_scanf) {
+    update_access_token();
+    print "while:$access_token\n";
 
-if ($value > 25) {
+    while (time() - $time_old < 15) {
+    }
+    $time_old = time();
+
+    $device_id = 354298;
+    $sensor_id = 400111;
+    $durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
+    $data = curl_request($durl);
+    $data_json = json_decode($data, true);
+    $value = $data_json["value"];
+
     $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA");
     foreach ($user_openids as $openid) {
         $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://github.com/zhangsheng377", 'data' => array('first' => array('value' => urlencode("SO2传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
         $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
     }
 
+    $file_read = fopen($file_name, "rb");
+    $temp_data = fscanf($file_read, "%d");
+    echo "while_temp_data:$temp_data[0]\n";
+    if ($temp_data[0] > 0) {
+        $can_scanf = true;
+    } else {
+        $can_scanf = false;
+    }
+    fclose($file_read);
+
     $file_write = fopen("template_time.dat", "wb");
     fwrite($file_write, $time_old);
     fclose($file_write);
 }
-
+echo "over\n";
 
 function curl_request($durl, $data = null)
 {
