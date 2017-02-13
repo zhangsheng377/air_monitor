@@ -18,15 +18,21 @@ $data_json = json_decode($data, true);
 $value = $data_json["value"];
 
 if ($value > 25) {
-    $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA");
-    foreach ($user_openids as $openid) {
-        $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://github.com/zhangsheng377", 'data' => array('first' => array('value' => urlencode("SO2传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
-        $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
+    $file_read = fopen("template_time.dat", "rb");
+    $time_read = fscanf($file_read, "%d");
+    fclose($file_read);
+    if (time() - $time_read[0] > 60 * 30) {
+        $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA");
+        foreach ($user_openids as $openid) {
+            $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://github.com/zhangsheng377", 'data' => array('first' => array('value' => urlencode("SO2传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
+            $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
+        }
+        $time_old = time();
+        $file_write = fopen("template_time.dat", "wb");
+        fwrite($file_write, $time_old);
+        fclose($file_write);
     }
 
-    $file_write = fopen("template_time.dat", "wb");
-    fwrite($file_write, $time_old);
-    fclose($file_write);
 }
 
 
