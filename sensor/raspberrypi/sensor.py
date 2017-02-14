@@ -103,7 +103,7 @@ while True:
 
         if not _DEBUG_:
             print "send value", values['CO'], values['SO2']
-            # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
+            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
             # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
