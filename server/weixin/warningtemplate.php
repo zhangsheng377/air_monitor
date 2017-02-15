@@ -24,7 +24,7 @@ if ($value > $value_limit) {
     $time_read = fscanf($file_read, "%d");
     fclose($file_read);
     if (time() - $time_read[0] > 60 * 30) {
-        $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA");
+        $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA", "owYXAwXf7rrHsQtknyd0honVkL_Y");
         foreach ($user_openids as $openid) {
             $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://www.yeelink.net/devices/$device_id/#sensor_$sensor_id", 'data' => array('first' => array('value' => urlencode("$sensor_name 传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
             $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));

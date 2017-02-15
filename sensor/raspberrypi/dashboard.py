@@ -39,18 +39,26 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.draw_scale(self.least, self.highest, self.line_width, self.color_bg, color.white)
         self.draw_needle(value, color.red)
 
-        temp = 0
+        temp_distance = 0
+        temp_pos = 0
         old_font_width = self.font_width
+        # print self.name
         if (self.name == '甲醛'):
             # print self.name
             # self.font_width = self.font_width / 4 * 3
             self.font = pygame.font.Font('wts11.ttf', self.font_width)
-            temp = self.font_width
+            temp_distance = self.font_width / 3
+            temp_pos = 0
+        elif (self.name == '易燃气体'):
+            self.font = pygame.font.Font('wts11.ttf', self.font_width)
+            temp_distance = self.font_width / 3
+            temp_pos = self.font_width / 2
         text_name = self.font.render(self.name.decode('utf-8', 'ignore'), True, color.white)
-        distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp / 3
+        distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp_distance
         self.surface.blit(text_name, (
-            self.position[0] - len(self.name) * self.font_width / 5, self.position[1] + distance_text_name))
-        temp = 0
+            self.position[0] - len(self.name) * self.font_width / 5 + temp_pos, self.position[1] + distance_text_name))
+        temp_distance = 0
+        temp_pos = 0
         self.font_width = old_font_width
         self.font = pygame.font.Font(None, self.font_width)
 

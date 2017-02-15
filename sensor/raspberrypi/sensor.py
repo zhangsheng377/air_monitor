@@ -49,7 +49,8 @@ x_mydashboard = 3
 y_mydashboard = 2
 mydashboard = {}
 values = {}
-names = ['PM2.5', 'CO', 'SO2', 'O3', '甲醛'.decode('gbk', 'ignore').encode('utf-8'), 'NOx']
+names = ['PM2.5', 'CO', 'SO2', 'O3', '甲醛'.decode('gbk', 'ignore').encode('utf-8'),
+         '易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
 values_range = {}
 values_range[names[0]] = (0, 500)
 values_range[names[1]] = (0, 200)
@@ -68,8 +69,8 @@ for y in range(0, y_mydashboard):
                                                                         values_range[names[x + y * x_mydashboard]][1])
         values[names[x + y * x_mydashboard]] = 0.0
 
-values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = 0.06;
-values['NOx'] = 1.35;
+values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = 0.06
+values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = 1.35
 
 while True:
     for event in pygame.event.get():
