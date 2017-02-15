@@ -70,7 +70,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         str_value = "%.2f" % value
         color_gap = (self.color_end.r - self.color_start.r, self.color_end.g - self.color_start.g,
                      self.color_end.b - self.color_start.b)
-        text_color = [self.color_start[0], self.color_start[1], self.color_start[2], 1]
+        text_color = [self.color_start[0], self.color_start[1], self.color_start[2]]
         text_color[0] = int(
             self.color_start[0] + (self.color_end[0] - self.color_start[0]) * 1.0 / (self.highest - self.least) * (
                 value - self.least))
@@ -80,7 +80,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         text_color[2] = int(
             self.color_start[2] + (self.color_end[2] - self.color_start[2]) * 1.0 / (self.highest - self.least) * (
                 value - self.least))
-        text_value = self.font.render(str_value, True, text_color)
+        text_value = self.font.render(str_value, True, pygame.Color(text_color[0], text_color[1], text_color[2]))
         # distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width * 2 - (self.gap) * 6
         distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width / 6 * 9 - (self.gap) * 6
         # self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
