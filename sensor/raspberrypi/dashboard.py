@@ -70,7 +70,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         str_value = "%.2f" % value
         color_gap = (self.color_end.r - self.color_start.r, self.color_end.g - self.color_start.g,
                      self.color_end.b - self.color_start.b)
-        text_color = [self.color_start[0], self.color_start[1], self.color_start[2], 0]
+        text_color = [self.color_start[0], self.color_start[1], self.color_start[2], 1]
         text_color[0] = int(
             self.color_start[0] + (self.color_end[0] - self.color_start[0]) * 1.0 / (self.highest - self.least) * (
                 value - self.least))
