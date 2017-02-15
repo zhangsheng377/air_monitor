@@ -18,7 +18,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.arc_width = self.line_width
         self.position = position
         self.name = name.decode('utf-8', 'ignore').encode('gbk')
-        #print self.name
+        # print self.name
         self.font_width = int(self.arc_width * 1.5)
         # self.font = pygame.font.SysFont('楷体', self.font_width)
         self.font = pygame.font.Font(None, self.font_width)
@@ -43,13 +43,13 @@ class DASHBOARD(pygame.sprite.Sprite):
         old_font_width = self.font_width
         if (self.name == '甲醛'):
             # print self.name
-            self.font_width = self.font_width / 4 * 3
+            # self.font_width = self.font_width / 4 * 3
             self.font = pygame.font.Font('wts11.ttf', self.font_width)
-            temp = self.font_width / 10 * 3
+            temp = self.font_width
         text_name = self.font.render(self.name.decode('utf-8', 'ignore'), True, color.white)
-        distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp / 4 * 15
+        distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp / 3
         self.surface.blit(text_name, (
-            self.position[0] - len(self.name) * self.font_width / 5 + temp, self.position[1] + distance_text_name))
+            self.position[0] - len(self.name) * self.font_width / 5, self.position[1] + distance_text_name))
         temp = 0
         self.font_width = old_font_width
         self.font = pygame.font.Font(None, self.font_width)
@@ -60,9 +60,6 @@ class DASHBOARD(pygame.sprite.Sprite):
         # self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
         self.surface.blit(text_value, (
             self.position[0] - len(str_value) * self.font_width / 6, self.position[1] + distance_text_value))
-
-
-
 
     def draw_blendcolor_arc(self, radius, width, color_start, color_end, degree_start, degree_stop, step):
         color_gap = (color_end.r - color_start.r, color_end.g - color_start.g, color_end.b - color_start.b)
