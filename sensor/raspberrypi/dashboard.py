@@ -44,7 +44,8 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.surface.blit(text_value, (
             self.position[0] - len(str_value) * self.font_width / 6, self.position[1] + distance_text_value))
 
-        text_name = self.font.render(str(self.name).encode('utf-8', 'ignore'), True, color.blue)
+        text_name = self.font.render((str(self.name)).encode('utf-8', 'ignore').encode('utf-8', 'ignore'), True,
+                                     color.blue)
         distance_text_name = self.radius - self.line_width - self.gap - self.font_width
         self.surface.blit(text_name, (
             self.position[0] - len(self.name) * self.font_width / 5, self.position[1] + distance_text_name))
