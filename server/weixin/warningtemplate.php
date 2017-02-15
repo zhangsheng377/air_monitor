@@ -11,21 +11,22 @@ $time_expires_in = -1;
 update_access_token();
 
 $device_id = 354298;
-$sensor_id = 400111;
-$sensor_name = "SO2";
+$sensor_id = 400108;
+$sensor_name = "PM2.5";
+$value_limit = 70;
 $durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
 $data = curl_request($durl);
 $data_json = json_decode($data, true);
 $value = $data_json["value"];
 
-if ($value > 25) {
+if ($value > $value_limit) {
     $file_read = fopen("template_time.dat", "rb");
     $time_read = fscanf($file_read, "%d");
     fclose($file_read);
     if (time() - $time_read[0] > 60 * 30) {
         $user_openids = array("owYXAwaD036go9d6b3ELlyFMjjD0", "owYXAwfBY0hM3y_UM9dg9RyYntoU", "owYXAwYDA_hUSYTveYUR1jO0WaPQ", "owYXAwd6NXwAbjtI6Fj3xqDh2Bss", "owYXAwde8zDF3cATEzimiT7qjVjA");
         foreach ($user_openids as $openid) {
-            $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://www.yeelink.net/devices/$device_id/#sensor_$sensor_id", 'data' => array('first' => array('value' => urlencode("$sensor_name传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
+            $template = array('touser' => "$openid", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://www.yeelink.net/devices/$device_id/#sensor_$sensor_id", 'data' => array('first' => array('value' => urlencode("$sensor_name 传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
             $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
         }
         $time_old = time();
