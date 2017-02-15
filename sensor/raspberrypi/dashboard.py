@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import pygame
 import color
 import math
