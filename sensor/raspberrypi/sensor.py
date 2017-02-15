@@ -94,6 +94,7 @@ while True:
     if value_O3 > 0:
         # print "O3 :", value_O3
         values['O3'] = value_O3
+    value_O3 = 0
 
     time_now = time()
     if time_now - time_old > 15:
