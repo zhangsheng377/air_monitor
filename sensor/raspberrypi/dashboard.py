@@ -17,8 +17,10 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.gap = int(max(math.ceil(self.line_width / 5.0), 2))
         self.arc_width = self.line_width
         self.position = position
-        self.name = name
+        self.name = name.decode('utf-8', 'ignore').encode('gbk')
+        #print self.name
         self.font_width = int(self.arc_width * 1.5)
+        # self.font = pygame.font.SysFont('楷体', self.font_width)
         self.font = pygame.font.Font(None, self.font_width)
         self.rect = (self.position[0] - self.radius, self.position[1] - self.radius, self.radius * 2, self.radius * 2)
         self.color_bg = color_bg
@@ -37,18 +39,30 @@ class DASHBOARD(pygame.sprite.Sprite):
         self.draw_scale(self.least, self.highest, self.line_width, self.color_bg, color.white)
         self.draw_needle(value, color.red)
 
+        temp = 0
+        old_font_width = self.font_width
+        if (self.name == '甲醛'):
+            # print self.name
+            self.font_width = self.font_width / 4 * 3
+            self.font = pygame.font.SysFont('楷体', self.font_width)
+            temp = self.font_width / 10 * 3
+        text_name = self.font.render(self.name.decode('utf-8', 'ignore'), True, color.white)
+        distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp / 4 * 15
+        self.surface.blit(text_name, (
+            self.position[0] - len(self.name) * self.font_width / 5 + temp, self.position[1] + distance_text_name))
+        temp = 0
+        self.font_width = old_font_width
+        self.font = pygame.font.Font(None, self.font_width)
+
         str_value = "%.2f" % value
-        text_value = self.font.render(str_value, True, color.blue)
+        text_value = self.font.render(str_value, True, color.pink)
         distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width * 2 - (self.gap) * 6
         # self.surface.blit(text_value, (self.position[0] - self.font_width, self.position[1] + distance_text_value))
         self.surface.blit(text_value, (
             self.position[0] - len(str_value) * self.font_width / 6, self.position[1] + distance_text_value))
 
-        text_name = self.font.render((str(self.name)).encode('utf-8', 'ignore').encode('utf-8', 'ignore'), True,
-                                     color.blue)
-        distance_text_name = self.radius - self.line_width - self.gap - self.font_width
-        self.surface.blit(text_name, (
-            self.position[0] - len(self.name) * self.font_width / 5, self.position[1] + distance_text_name))
+
+
 
     def draw_blendcolor_arc(self, radius, width, color_start, color_end, degree_start, degree_stop, step):
         color_gap = (color_end.r - color_start.r, color_end.g - color_start.g, color_end.b - color_start.b)

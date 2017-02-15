@@ -35,7 +35,7 @@ x_mydashboard = 3
 y_mydashboard = 2
 mydashboard = []
 
-names = ['PM2.5', 'CO', 'SO2', 'O3', 'xx0', 'xx1']
+names = ['PM2.5', 'CO', 'SO2', 'O3', '甲醛'.decode('gbk', 'ignore').encode('utf-8'), 'xx1']
 
 for y in range(0, y_mydashboard):
     for x in range(0, x_mydashboard):
