@@ -44,7 +44,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         if (self.name == '甲醛'):
             # print self.name
             self.font_width = self.font_width / 4 * 3
-            self.font = pygame.font.SysFont('楷体', self.font_width)
+            self.font = pygame.font.Font('wts11.ttf', self.font_width)
             temp = self.font_width / 10 * 3
         text_name = self.font.render(self.name.decode('utf-8', 'ignore'), True, color.white)
         distance_text_name = self.radius - self.line_width - self.gap - self.font_width - temp / 4 * 15
