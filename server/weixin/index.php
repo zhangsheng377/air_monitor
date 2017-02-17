@@ -78,6 +78,12 @@ class wechatCallbackapiTest
                 $data_template = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
                 $contentStr .= "\n\ntemplate:$data_template";
                 //$contentStr .= "\n\nfromUsername:$fromUsername\ntoUsername:$toUsername";
+                $ids = $this->get_openids();
+                $count_ids = count($ids);
+                $contentStr .= "\n\n$count_ids  $ids[0]";
+                $dbhandle = sqlite_open('sqlitedb');
+                $contentStr .= "\n\n$dbhandle";
+                sqlite_close($dbhandle);
                 $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 echo $resultStr;
 
@@ -153,6 +159,14 @@ class wechatCallbackapiTest
             fwrite($file_write, $this->time_expires_in);
             fclose($file_write);
         }
+    }
+
+    private function get_openids()
+    {
+        $this->update_access_token();
+        $data_return = $this->curl_request("https://api.weixin.qq.com/cgi-bin/user/get?access_token=$this->access_token&next_openid=");
+        $ids_json = json_decode($data_return, true);
+        return $ids_json["data"]["openid"];
     }
 
 
