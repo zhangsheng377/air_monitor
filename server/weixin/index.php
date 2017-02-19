@@ -44,9 +44,11 @@ class wechatCallbackapiTest
             $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
             $fromUsername = $postObj->FromUserName;
             $toUsername = $postObj->ToUserName;
-            $keyword = trim($postObj->Content);
-            $time = time();
-            $textTpl = "<xml>
+            $msgType = $postObj->MsgType;
+            if ($msgType == "text") {
+                $keyword = trim($postObj->Content);
+                $time = time();
+                $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
 							<CreateTime>%s</CreateTime>
@@ -54,46 +56,63 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-            if (!empty($keyword)) {
-                $msgType = "text";
+                if (!empty($keyword)) {
+                    $msgType = "text";
 
-                $device_id = 353097;
-                $sensor_id = 397985;
-                $durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
-                //$data = file_get_contents($durl);
-                //$data_json=json_decode($data,true);
-                //$contentStr='传感器报警！当前数值为 : '.$data_json["value"];
-                //$data_json = json_decode($data);
-                //$r = $this->curl_file_get_contents($durl);
-                //$contentStr = "传感器报警！当前数值为 : $data_json->value \n\n测试curl中:\n$r";
-                $data = $this->curl_request($durl);
-                $data_json = json_decode($data, true);
-                $value = $data_json["value"];
-                $contentStr = "传感器报警！当前数值为 : $value";
-                if (time() > $this->time_expires_in) {
-                    $this->update_access_token();
+                    $device_id = 353097;
+                    $sensor_id = 397985;
+                    $durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
+                    //$data = file_get_contents($durl);
+                    //$data_json=json_decode($data,true);
+                    //$contentStr='传感器报警！当前数值为 : '.$data_json["value"];
+                    //$data_json = json_decode($data);
+                    //$r = $this->curl_file_get_contents($durl);
+                    //$contentStr = "传感器报警！当前数值为 : $data_json->value \n\n测试curl中:\n$r";
+                    $data = $this->curl_request($durl);
+                    $data_json = json_decode($data, true);
+                    $value = $data_json["value"];
+                    $contentStr = "传感器报警！当前数值为 : $value";
+                    if (time() > $this->time_expires_in) {
+                        $this->update_access_token();
+                    }
+                    //$contentStr .= "\n\naccess_token:$this->access_token";
+                    $template = array('touser' => "$fromUsername", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://github.com/zhangsheng377", 'data' => array('first' => array('value' => urlencode("传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
+                    $data_template = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                    $contentStr .= "\n\ntemplate:$data_template";
+                    //$contentStr .= "\n\nfromUsername:$fromUsername\ntoUsername:$toUsername";
+                    $ids = $this->get_openids();
+                    $count_ids = count($ids);
+                    $contentStr .= "\n\n$count_ids  $ids[0]";
+                    $dbhandle = sqlite_open('sqlitedb.db');
+                    $contentStr .= "\n\n$dbhandle";
+                    sqlite_close($dbhandle);
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
+
+
+                } else {
+                    echo "Input something...";
                 }
-                //$contentStr .= "\n\naccess_token:$this->access_token";
-                $template = array('touser' => "$fromUsername", 'template_id' => "Oh5bDFWIIdg8acICj639FGPeLNMNxP0X68uWykjZLuM", 'url' => "http://github.com/zhangsheng377", 'data' => array('first' => array('value' => urlencode("传感器报警！"), 'color' => "#743A3A"), 'second' => array('value' => urlencode("$value"), 'color' => "#FF0000")));
-                $data_template = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
-                $contentStr .= "\n\ntemplate:$data_template";
-                //$contentStr .= "\n\nfromUsername:$fromUsername\ntoUsername:$toUsername";
-                $ids = $this->get_openids();
-                $count_ids = count($ids);
-                $contentStr .= "\n\n$count_ids  $ids[0]";
-                $dbhandle = sqlite_open('sqlitedb');
-                $contentStr .= "\n\n$dbhandle";
-                sqlite_close($dbhandle);
+            } elseif ($msgType == "event") {
+                $msgType = "text";
+                $event = $postObj->Event;
+                $eventkey = $postObj->EventKey;
+                $time = time();
+                $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                $contentStr = "$event";
+                $contentStr .= "\n\n$eventkey";
                 $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 echo $resultStr;
-
-
-            } else {
-                echo "Input something...";
             }
-
         } else {
-            echo "lalala";
+            echo "postStr is empty";
             exit;
         }
     }

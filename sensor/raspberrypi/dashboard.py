@@ -80,7 +80,7 @@ class DASHBOARD(pygame.sprite.Sprite):
         text_color[2] = int(
             self.color_start[2] + (self.color_end[2] - self.color_start[2]) * 1.0 / (self.highest - self.least) * (
                 value - self.least))
-        print text_color[0], text_color[1], text_color[2], self.name, value
+        print text_color[0], text_color[1], text_color[2], self.name, value, self.least
         temp_color = pygame.Color(text_color[0], text_color[1], text_color[2])
         text_value = self.font.render(str_value, True, temp_color)
         # distance_text_value = self.radius - self.line_width - self.arc_width - self.font_width * 2 - (self.gap) * 6
