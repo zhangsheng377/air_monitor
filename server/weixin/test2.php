@@ -6,16 +6,8 @@
  * Date: 2017/2/10,0010
  * Time: 20:19
  */
-class MyDB extends SQLiteDatabase
-{
+if ($db = sqlite_open('sqlitedb.db', 0666, $sqliteerror)) {
+    sqlite_query($db, "CREATE TABLE users ([openid] TEXT PRIMARY KEY NOT NULL,[device_id] TEXT NOT NULL DEFAULT 354298,[PM2.5_limit] DOUBLE NOT NULL DEFAULT 70.0,[CO_limit] DOUBLE NOT NULL DEFAULT 120.0,[SO2_limit] DOUBLE NOT NULL DEFAULT 40.0,[O3_limit] DOUBLE NOT NULL DEFAULT 99999.0)");
 }
 
-$db = new MyDB();
-$db->__construct("mysqlitedb");
-$db->exec('CREATE TABLE foo (bar STRING)');
-$db->exec("INSERT INTO foo (bar) VALUES ('This is a test')");
-
-$result = $db->query('SELECT bar FROM foo');
-echo var_dump($result->fetchArray());
-#echo $result->fetchArray()[0];
 ?>

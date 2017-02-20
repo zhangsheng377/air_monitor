@@ -83,9 +83,38 @@ class wechatCallbackapiTest
                     $ids = $this->get_openids();
                     $count_ids = count($ids);
                     $contentStr .= "\n\n$count_ids  $ids[0]";
+
                     $dbhandle = sqlite_open('sqlitedb.db');
-                    $contentStr .= "\n\n$dbhandle";
+                    $query = sqlite_query($dbhandle, 'SELECT name FROM sensor_names');
                     sqlite_close($dbhandle);
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
+                        $name = $entry['name'];
+                        $contentStr .= "\n$name";
+                    }
+                    $dbhandle = sqlite_open('sqlitedb.db');
+                    $query = sqlite_query($dbhandle, 'SELECT * FROM devices');
+                    sqlite_close($dbhandle);
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
+                        $contentStr = $contentStr . "\n" . $entry['device_id'] . "  " . $entry['location_x'] . "  " . $entry['location_y'] . "  " . $entry['sensor_PM2.5'] . "  " . $entry['sensor_CO'] . "  " . $entry['sensor_SO2'] . "  " . $entry['sensor_O3'];
+                    }
+                    $dbhandle = sqlite_open('sqlitedb.db');
+                    $query = sqlite_query($dbhandle, 'SELECT COUNT(name) FROM sensor_names');
+                    sqlite_close($dbhandle);
+                    $result = sqlite_fetch_all($query);
+                    $contentStr = $contentStr . "\n\n" . $result[0]["COUNT(name)"];
+
+
+                    $dbhandle = sqlite_open('sqlitedb.db');
+                    $query = sqlite_query($dbhandle, 'SELECT * FROM users');
+                    sqlite_close($dbhandle);
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
+                        $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2.5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'];
+                    }
+
+
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                     echo $resultStr;
 
@@ -113,7 +142,7 @@ class wechatCallbackapiTest
                     $contentStr .= "\n\n$latitude";
                     $contentStr .= "\n\n$longitude";
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                    echo $resultStr;
+                    //echo $resultStr;
                 } elseif ($event == "CLICK") {
                     $eventkey = $postObj->EventKey;
 
@@ -129,6 +158,41 @@ class wechatCallbackapiTest
 							</xml>";
                     $contentStr = "$event";
                     $contentStr .= "\n\n$eventkey";
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
+                } elseif ($event == "subscribe") {
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+
+                    $ids = $this->get_openids();
+                    $count_ids = count($ids);
+                    $contentStr = "现在一共有 $count_ids 位朋友关注了本公众号~";
+                    foreach ($ids as $id) {
+                        //$contentStr .= "\n$id\n";
+                        $dbhandle = sqlite_open('sqlitedb.db');
+                        $query = sqlite_query($dbhandle, "SELECT COUNT(openid) FROM users WHERE openid=='$id'");
+                        sqlite_close($dbhandle);
+                        $result = sqlite_fetch_all($query);
+                        if ($result[0]["COUNT(openid)"] == "0") {
+                            $dbhandle = sqlite_open('sqlitedb.db');
+                            $is_exec = sqlite_exec($dbhandle, "INSERT INTO users VALUES('$id','354298',70.0,120.0,40.0,99999.0)", $error);
+                            sqlite_close($dbhandle);
+                            if (!$is_exec) {
+                                $contentStr .= "\nINSERT $id error : $error\n";
+                            } else {
+                                $contentStr .= "\nINSERT $id success\n";
+                            }
+                        }
+                    }
+
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                     echo $resultStr;
                 } else {
@@ -189,7 +253,8 @@ class wechatCallbackapiTest
         }
     }
 
-    private function checkSignature()
+    private
+    function checkSignature()
     {
         // you must define TOKEN by yourself
         if (!defined("TOKEN")) {
@@ -214,7 +279,8 @@ class wechatCallbackapiTest
         }
     }
 
-    private function curl_request($durl, $data = null)
+    private
+    function curl_request($durl, $data = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $durl);
@@ -228,7 +294,8 @@ class wechatCallbackapiTest
         return $r;
     }
 
-    private function update_access_token()
+    private
+    function update_access_token()
     {
         $file_name = "access_token.dat";
         $file_read = fopen($file_name, "rb");
@@ -252,7 +319,8 @@ class wechatCallbackapiTest
         }
     }
 
-    private function get_openids()
+    private
+    function get_openids()
     {
         $this->update_access_token();
         $data_return = $this->curl_request("https://api.weixin.qq.com/cgi-bin/user/get?access_token=$this->access_token&next_openid=");
