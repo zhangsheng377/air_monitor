@@ -94,10 +94,65 @@ class wechatCallbackapiTest
                     echo "Input something...";
                 }
             } elseif ($msgType == "event") {
-                $msgType = "text";
                 $event = $postObj->Event;
-                $eventkey = $postObj->EventKey;
+                if ($event == "LOCATION") {
+                    $latitude = $postObj->Latitude;
+                    $longitude = $postObj->Longitude;
+
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                    $contentStr = "$event";
+                    $contentStr .= "\n\n$latitude";
+                    $contentStr .= "\n\n$longitude";
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
+                } elseif ($event == "CLICK") {
+                    $eventkey = $postObj->EventKey;
+
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                    $contentStr = "$event";
+                    $contentStr .= "\n\n$eventkey";
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
+                } else {
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                    $contentStr = "$event";
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
+                }
+            } elseif ($msgType == "location") {
+                $msgType_old = $msgType;
+                $location_x = $postObj->Location_X;
+                $location_y = $postObj->Location_Y;
+
                 $time = time();
+                $msgType = "text";
                 $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
@@ -106,8 +161,25 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                $contentStr = "$event";
-                $contentStr .= "\n\n$eventkey";
+                $contentStr = "$msgType_old";
+                $contentStr .= "\n\n$location_x";
+                $contentStr .= "\n\n$location_y";
+                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                echo $resultStr;
+            } else {
+                $msgType_old = $msgType;
+
+                $time = time();
+                $msgType = "text";
+                $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                $contentStr = "$msgType_old";
                 $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 echo $resultStr;
             }
