@@ -23,15 +23,15 @@ $menu_json = '{
             "key":"setlimit"
         },
         {
-            "name":"帮助",
+            "name":"显示阈值",
             "type":"click",
-            "key":"help"
+            "key":"showlimit"
         }
     ]
     }';
 $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=$access_token";
 $result = curl_request($url, $menu_json);
-echo $result;
+echo $url . "\n" . $result;
 
 function curl_request($durl, $data = null)
 {

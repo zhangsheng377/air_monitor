@@ -113,30 +113,20 @@ class wechatCallbackapiTest
                     echo $resultStr;
 
                 } else {
-                    $time = time();
-                    $msgType = "text";
-                    $textTpl = "<xml>
-							<ToUserName><![CDATA[%s]]></ToUserName>
-							<FromUserName><![CDATA[%s]]></FromUserName>
-							<CreateTime>%s</CreateTime>
-							<MsgType><![CDATA[%s]]></MsgType>
-							<Content><![CDATA[%s]]></Content>
-							<FuncFlag>0</FuncFlag>
-							</xml>";
-                    $contentStr = "你说的是 : \n";
-                    $contentStr .= "$keyword\n";
-                    $contentStr .= "\n本公众号正在建设中......\n如需反馈，请联系：435878393";
-                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                    echo $resultStr;
-                }
-            } elseif ($msgType == "event") {
-                $event = $postObj->Event;
-                if ($event == "LOCATION") {
-                    $latitude = $postObj->Latitude;
-                    $longitude = $postObj->Longitude;
-                    $this->mysqlite_device_id_closest($latitude, $longitude, $fromUsername, true);
-                } elseif ($event == "CLICK") {
-                    $eventkey = $postObj->EventKey;
+                    $str = explode(' ', $keyword);
+                    $sensor_name = $str[0];
+                    if ($sensor_name == "PM2.5") {
+                        $sensor_name = "PM2_5";
+                    }
+                    $limit_sensor = $sensor_name . "_limit";
+                    $value = (double)$str[1];
+                    $sql_command = "UPDATE users SET $limit_sensor = $value WHERE openid=='$fromUsername'";
+                    $is_exec = $this->mysqlite_do($sql_command, $error);
+                    if ($is_exec) {
+                        $contentStr = "您的$str[0]报警阈值已设置成功";
+                    } else {
+                        $contentStr = "对不起，您的$str[0]报警阈值修改失败...\n\n请向客服QQ:435878393反馈此错误代码~谢谢~~\n\n$sql_command\n\n$error";
+                    }
 
                     $time = time();
                     $msgType = "text";
@@ -148,10 +138,83 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                    $contentStr = "$event";
-                    $contentStr .= "\n\n$eventkey";
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                     echo $resultStr;
+                }
+            } elseif ($msgType == "event") {
+                $event = $postObj->Event;
+                if ($event == "LOCATION") {
+                    $latitude = $postObj->Latitude;
+                    $longitude = $postObj->Longitude;
+                    $this->mysqlite_device_id_closest($latitude, $longitude, $fromUsername, true);
+                } elseif ($event == "CLICK") {
+                    $eventkey = $postObj->EventKey;
+                    if ($eventkey == "showlimit") {
+                        $contentStr = "您所设置的空气质量报警阈值为 : ";
+                        $sql_command = "SELECT name FROM sensor_names";
+                        $query = $this->mysqlite_do($sql_command);
+                        $sensor_names = sqlite_fetch_all($query);
+                        foreach ($sensor_names as $sensor_name) {
+                            $sql_command = "SELECT $sensor_name[0]_limit FROM users WHERE openid=='$fromUsername'";
+                            $query = $this->mysqlite_do($sql_command);
+                            $result = sqlite_fetch_all($query);
+                            $limit_value = $result[0]["$sensor_name[0]_limit"];
+                            if ($sensor_name[0] == "PM2_5") {
+                                $contentStr .= "\nPM2.5 : $limit_value";
+                            } else {
+                                $contentStr .= "\n$sensor_name[0] : $limit_value";
+                            }
+                        }
+                        $time = time();
+                        $msgType = "text";
+                        $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                        echo $resultStr;
+                    } elseif ($eventkey == "setlimit") {
+                        $template = array(
+                            'touser' => "$fromUsername",
+                            'template_id' => "T10MoD6iWTsqf9h-q9bjEAcEBIytb5traQrNNZZKjDs",
+                            'data' => array(
+                                'first' => array(
+                                    'value' => urlencode("由于微信的限制，目前我们只能请您采取发送命令的方式进行设置阈值。对给您造成的不便，我们感到万分抱歉。"),
+                                    'color' => "#000000"),
+                                'second' => array(
+                                    'value' => urlencode("监测类型 报警阈值"),
+                                    'color' => "#00FF00"),
+                                'third' => array(
+                                    'value' => urlencode("PM2.5 56.7"),
+                                    'color' => "#0000FF"),
+                                'fourth' => array(
+                                    'value' => urlencode("目前所支持的监测类型有：PM2.5、CO、SO2、O3"),
+                                    'color' => "#000000")
+                            )
+                        );
+                        $this->update_access_token();
+                        $data_template = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                    } else {
+                        $contentStr = "点击事件 $eventkey 暂时未被收录\n\n请联系系统管理员：435878393";
+                        $time = time();
+                        $msgType = "text";
+                        $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                        echo $resultStr;
+                    }
+
+
                 } elseif ($event == "subscribe") {
                     $time = time();
                     $msgType = "text";
