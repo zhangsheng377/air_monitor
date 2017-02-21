@@ -84,31 +84,26 @@ class wechatCallbackapiTest
                     $count_ids = count($ids);
                     $contentStr .= "\n\n$count_ids  $ids[0]";
 
-                    $dbhandle = sqlite_open('sqlitedb.db');
-                    $query = sqlite_query($dbhandle, 'SELECT name FROM sensor_names');
-                    sqlite_close($dbhandle);
+                    $sql_command = "SELECT name FROM sensor_names";
+                    $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     foreach ($result as $entry) {
                         $name = $entry['name'];
                         $contentStr .= "\n$name";
                     }
-                    $dbhandle = sqlite_open('sqlitedb.db');
-                    $query = sqlite_query($dbhandle, 'SELECT * FROM devices');
-                    sqlite_close($dbhandle);
+                    $sql_command = "SELECT * FROM devices";
+                    $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     foreach ($result as $entry) {
                         $contentStr = $contentStr . "\n" . $entry['device_id'] . "  " . $entry['location_x'] . "  " . $entry['location_y'] . "  " . $entry['sensor_PM2.5'] . "  " . $entry['sensor_CO'] . "  " . $entry['sensor_SO2'] . "  " . $entry['sensor_O3'];
                     }
-                    $dbhandle = sqlite_open('sqlitedb.db');
-                    $query = sqlite_query($dbhandle, 'SELECT COUNT(name) FROM sensor_names');
-                    sqlite_close($dbhandle);
+                    $sql_command = "SELECT COUNT(name) FROM sensor_names";
+                    $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     $contentStr = $contentStr . "\n\n" . $result[0]["COUNT(name)"];
 
-
-                    $dbhandle = sqlite_open('sqlitedb.db');
-                    $query = sqlite_query($dbhandle, 'SELECT * FROM users');
-                    sqlite_close($dbhandle);
+                    $sql_command = "SELECT * FROM users";
+                    $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     foreach ($result as $entry) {
                         $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2.5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'];
@@ -176,19 +171,16 @@ class wechatCallbackapiTest
                     $count_ids = count($ids);
                     $contentStr = "现在一共有 $count_ids 位朋友关注了本公众号~";
                     foreach ($ids as $id) {
-                        //$contentStr .= "\n$id\n";
-                        $dbhandle = sqlite_open('sqlitedb.db');
-                        $query = sqlite_query($dbhandle, "SELECT COUNT(openid) FROM users WHERE openid=='$id'");
-                        sqlite_close($dbhandle);
+                        $sql_command = "SELECT COUNT(openid) FROM users WHERE openid=='$id'";
+                        $query = $this->mysqlite_do($sql_command);
                         $result = sqlite_fetch_all($query);
                         if ($result[0]["COUNT(openid)"] == "0") {
-                            $dbhandle = sqlite_open('sqlitedb.db');
-                            $is_exec = sqlite_exec($dbhandle, "INSERT INTO users VALUES('$id','354298',70.0,120.0,40.0,99999.0)", $error);
-                            sqlite_close($dbhandle);
-                            if (!$is_exec) {
-                                $contentStr .= "\nINSERT $id error : $error\n";
+                            $sql_command = "INSERT INTO users VALUES('$id','354298',70.0,120.0,40.0,99999.0)";
+                            $is_exec = $this->mysqlite_do($sql_command, $error);
+                            if ($is_exec) {
+                                //$contentStr .= "\nINSERT $id success\n";
                             } else {
-                                $contentStr .= "\nINSERT $id success\n";
+                                $contentStr .= "请向客服反馈此错误代码~谢谢~~\n\nINSERT $id error :\n$error";
                             }
                         }
                     }
@@ -214,6 +206,9 @@ class wechatCallbackapiTest
                 $msgType_old = $msgType;
                 $location_x = $postObj->Location_X;
                 $location_y = $postObj->Location_Y;
+                $label = $postObj->Label;
+
+                $device_id = $this->mysqlite_device_id_closest($location_x, $location_y, $fromUsername);
 
                 $time = time();
                 $msgType = "text";
@@ -225,9 +220,24 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                $contentStr = "$msgType_old";
-                $contentStr .= "\n\n$location_x";
-                $contentStr .= "\n\n$location_y";
+                $contentStr = "$label" . "的空气质量为 : ";
+
+                $sql_command = "SELECT name FROM sensor_names";
+                $query = $this->mysqlite_do($sql_command);
+                $sensor_names = sqlite_fetch_all($query);
+                foreach ($sensor_names as $sensor_name) {
+                    $sql_command = "SELECT sensor_$sensor_name[0] FROM devices WHERE device_id=='$device_id'";
+                    $query = $this->mysqlite_do($sql_command);
+                    $result = sqlite_fetch_all($query);
+                    $sensor_id = $result[0]["sensor_$sensor_name[0]"];
+                    $value = $this->yeelinkapi_read_lastvalue($device_id, $sensor_id);
+                    if ($sensor_name[0] == "PM2_5") {
+                        $contentStr .= "\nPM2.5的数值为 : $value";
+                    } else {
+                        $contentStr .= "\n$sensor_name[0]的数值为 : $value";
+                    }
+                }
+
                 $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 echo $resultStr;
             } else {
@@ -253,8 +263,7 @@ class wechatCallbackapiTest
         }
     }
 
-    private
-    function checkSignature()
+    private function checkSignature()
     {
         // you must define TOKEN by yourself
         if (!defined("TOKEN")) {
@@ -279,8 +288,7 @@ class wechatCallbackapiTest
         }
     }
 
-    private
-    function curl_request($durl, $data = null)
+    private function curl_request($durl, $data = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $durl);
@@ -294,8 +302,7 @@ class wechatCallbackapiTest
         return $r;
     }
 
-    private
-    function update_access_token()
+    private function update_access_token()
     {
         $file_name = "access_token.dat";
         $file_read = fopen($file_name, "rb");
@@ -319,8 +326,7 @@ class wechatCallbackapiTest
         }
     }
 
-    private
-    function get_openids()
+    private function get_openids()
     {
         $this->update_access_token();
         $data_return = $this->curl_request("https://api.weixin.qq.com/cgi-bin/user/get?access_token=$this->access_token&next_openid=");
@@ -328,6 +334,55 @@ class wechatCallbackapiTest
         return $ids_json["data"]["openid"];
     }
 
+    private function mysqlite_do($sql_command, &$error = null)
+    {
+        $dbhandle = sqlite_open('sqlitedb.db');
+        if (empty($error)) {
+            $result = sqlite_query($dbhandle, "$sql_command");
+        } else {
+            $result = sqlite_exec($dbhandle, "$sql_command", $error);
+        }
+        sqlite_close($dbhandle);
+        return $result;
+    }
+
+    private function mysqlite_device_id_closest($location_x, $location_y, $openid = null, $is_update = false)
+    {
+        if (empty($openid)) {
+            $device_id = "354298";
+        } else {
+            $sql_command = "SELECT device_id FROM users WHERE openid=='$openid'";
+            $query = $this->mysqlite_do($sql_command);
+            $result = sqlite_fetch_all($query);
+            $device_id = $result[0]["device_id"];
+        }
+        $distance = 9999999;
+        $sql_command = "SELECT device_id,location_x,location_y FROM devices";
+        $query = $this->mysqlite_do($sql_command);
+        $result = sqlite_fetch_all($query);
+        foreach ($result as $entry) {
+            $gap_x = (double)$location_x - $entry['location_x'];
+            $gap_y = (double)$location_y - $entry['location_y'];
+            $distance_new = pow($gap_x, 2) + pow($gap_y, 2);
+            if ($distance_new < $distance) {
+                $distance = $distance_new;
+                $device_id = $entry['device_id'];
+            }
+        }
+        if ($is_update) {
+            $sql_command = "UPDATE users SET device_id='$device_id' WHERE openid=='$openid'";
+            $this->mysqlite_do($sql_command);
+        }
+        return $device_id;
+    }
+
+    private function yeelinkapi_read_lastvalue($device_id, $sensor_id)
+    {
+        $durl = "http://api.yeelink.net/v1.0/device/$device_id/sensor/$sensor_id/datapoints";
+        $data = $this->curl_request($durl);
+        $data_json = json_decode($data, true);
+        return $data_json["value"];
+    }
 
 }
 
