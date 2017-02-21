@@ -47,8 +47,10 @@ class wechatCallbackapiTest
             $msgType = $postObj->MsgType;
             if ($msgType == "text") {
                 $keyword = trim($postObj->Content);
-                $time = time();
-                $textTpl = "<xml>
+                if ($keyword == "debug") {
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
 							<CreateTime>%s</CreateTime>
@@ -56,8 +58,6 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                if (!empty($keyword)) {
-                    $msgType = "text";
 
                     $device_id = 353097;
                     $sensor_id = 397985;
@@ -109,20 +109,10 @@ class wechatCallbackapiTest
                         $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2.5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'];
                     }
 
-
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                     echo $resultStr;
 
-
                 } else {
-                    echo "Input something...";
-                }
-            } elseif ($msgType == "event") {
-                $event = $postObj->Event;
-                if ($event == "LOCATION") {
-                    $latitude = $postObj->Latitude;
-                    $longitude = $postObj->Longitude;
-
                     $time = time();
                     $msgType = "text";
                     $textTpl = "<xml>
@@ -133,11 +123,18 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                    $contentStr = "$event";
-                    $contentStr .= "\n\n$latitude";
-                    $contentStr .= "\n\n$longitude";
+                    $contentStr = "你说的是 : \n";
+                    $contentStr .= "$keyword\n";
+                    $contentStr .= "\n本公众号正在建设中......\n如需反馈，请联系：435878393";
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                    //echo $resultStr;
+                    echo $resultStr;
+                }
+            } elseif ($msgType == "event") {
+                $event = $postObj->Event;
+                if ($event == "LOCATION") {
+                    $latitude = $postObj->Latitude;
+                    $longitude = $postObj->Longitude;
+                    $this->mysqlite_device_id_closest($latitude, $longitude, $fromUsername, true);
                 } elseif ($event == "CLICK") {
                     $eventkey = $postObj->EventKey;
 
