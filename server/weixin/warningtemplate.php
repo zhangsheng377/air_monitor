@@ -35,24 +35,38 @@ foreach ($users_detail as $user_detail) {
             $sensor_truename = $sensor_name[0];
         }
         if ($value > $value_limit) {
-            $template = array(
-                'touser' => "$openid",
-                'template_id' => "NGh_7ivNtf_AhRY5TrKBNGBrV-HsqZveiTeMNKTSYYA",
-                'url' => "http://www.yeelink.net/devices/$device_id/#sensor_$sensor_id",
-                'data' => array(
-                    'first' => array(
-                        'value' => urlencode("您身边的 $sensor_truename 数值超过报警阈值！"),
-                        'color' => "#743A3A"),
-                    'second' => array(
-                        'value' => urlencode("请注意自身健康！"),
-                        'color' => "#743A3A"),
-                    'third' => array(
-                        'value' => urlencode("传感器数值："),
-                        'color' => "#000000"),
-                    'fourth' => array(
-                        'value' => urlencode("$value"),
-                        'color' => "#FF0000")));
-            $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
+            $alertvalue = $user_detail["$sensor_name[0]_alertvalue"];
+            if (abs($value - $alertvalue) > 1.0) {
+                $time = time();
+                $alerttime = $user_detail["$sensor_name[0]_alerttime"];
+                if ($time - $alerttime > 60 * 30) {
+                    $template = array(
+                        'touser' => "$openid",
+                        'template_id' => "NGh_7ivNtf_AhRY5TrKBNGBrV-HsqZveiTeMNKTSYYA",
+                        'url' => "http://www.yeelink.net/devices/$device_id/#sensor_$sensor_id",
+                        'data' => array(
+                            'first' => array(
+                                'value' => urlencode("您身边的 $sensor_truename 数值超过报警阈值！"),
+                                'color' => "#743A3A"),
+                            'second' => array(
+                                'value' => urlencode("请注意自身健康！"),
+                                'color' => "#743A3A"),
+                            'third' => array(
+                                'value' => urlencode("传感器数值："),
+                                'color' => "#000000"),
+                            'fourth' => array(
+                                'value' => urlencode("$value"),
+                                'color' => "#FF0000")));
+                    $data_template = curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$access_token", urldecode(json_encode($template)));
+                    if ($data_template["errcode"] == "0") {
+                        $sql_command = "UPDATE users SET $sensor_name[0]_alertvalue = $value , $sensor_name[0]_alerttime = $time WHERE openid=='$openid'";
+                        $is_exec = $this->mysqlite_do($sql_command, $error);
+                        if (!$is_exec) {
+                            echo "$error";
+                        }
+                    }
+                }
+            }
         }
     }
 }
