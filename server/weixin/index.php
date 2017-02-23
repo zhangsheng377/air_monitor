@@ -113,24 +113,38 @@ class wechatCallbackapiTest
                     echo $resultStr;
 
                 } else {
+                    $this->update_access_token();
                     $str = explode(' ', $keyword);
-                    $sensor_name = $str[0];
-                    if ($sensor_name == "PM2.5") {
-                        $sensor_name = "PM2_5";
-                    }
-                    $limit_sensor = $sensor_name . "_limit";
-                    $value = (double)$str[1];
-                    $sql_command = "UPDATE users SET $limit_sensor = $value WHERE openid=='$fromUsername'";
-                    $is_exec = $this->mysqlite_do($sql_command, $error);
-                    if ($is_exec) {
-                        $contentStr = "您的$str[0]报警阈值已设置成功";
+                    if ($str[0] == "debug广播") {
+                        $ids = $this->get_openids();
+                        foreach ($ids as $id) {
+                            $template = array(
+                                'touser' => "$id",
+                                'template_id' => "hhfH9JOdwlcRhPhsjcixtd9EvSFOADgw-BFCUUD01v4",
+                                'data' => array(
+                                    'first' => array('value' => urlencode("$str[1]"), 'color' => "#743A3A")
+                                )
+                            );
+                            $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                        }
                     } else {
-                        $contentStr = "对不起，您的$str[0]报警阈值修改失败...\n\n请向客服QQ:435878393反馈此错误代码~谢谢~~\n\n$sql_command\n\n$error";
-                    }
+                        $sensor_name = $str[0];
+                        if ($sensor_name == "PM2.5") {
+                            $sensor_name = "PM2_5";
+                        }
+                        $limit_sensor = $sensor_name . "_limit";
+                        $value = (double)$str[1];
+                        $sql_command = "UPDATE users SET $limit_sensor = $value WHERE openid=='$fromUsername'";
+                        $is_exec = $this->mysqlite_do($sql_command, $error);
+                        if ($is_exec) {
+                            $contentStr = "您的$str[0]报警阈值已设置成功";
+                        } else {
+                            $contentStr = "对不起，您的$str[0]报警阈值修改失败...\n\n请向客服QQ:435878393反馈此错误代码~谢谢~~\n\n$sql_command\n\n$error";
+                        }
 
-                    $time = time();
-                    $msgType = "text";
-                    $textTpl = "<xml>
+                        $time = time();
+                        $msgType = "text";
+                        $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
 							<CreateTime>%s</CreateTime>
@@ -138,8 +152,9 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                    echo $resultStr;
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                        echo $resultStr;
+                    }
                 }
             } elseif ($msgType == "event") {
                 $event = $postObj->Event;
@@ -285,6 +300,7 @@ class wechatCallbackapiTest
                 $sql_command = "SELECT name FROM sensor_names";
                 $query = $this->mysqlite_do($sql_command);
                 $sensor_names = sqlite_fetch_all($query);
+                //$value=array();
                 foreach ($sensor_names as $sensor_name) {
                     $sql_command = "SELECT sensor_$sensor_name[0] FROM devices WHERE device_id=='$device_id'";
                     $query = $this->mysqlite_do($sql_command);
