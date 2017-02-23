@@ -212,7 +212,7 @@ class wechatCallbackapiTest
                             )
                         );
                         $this->update_access_token();
-                        $data_template = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                        $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
                     } else {
                         $contentStr = "点击事件 $eventkey 暂时未被收录\n\n请联系系统管理员：435878393";
                         $time = time();
@@ -278,16 +278,57 @@ class wechatCallbackapiTest
                     echo $resultStr;
                 }
             } elseif ($msgType == "location") {
-                $msgType_old = $msgType;
                 $location_x = $postObj->Location_X;
                 $location_y = $postObj->Location_Y;
                 $label = $postObj->Label;
 
                 $device_id = $this->mysqlite_device_id_closest($location_x, $location_y, $fromUsername);
 
-                $time = time();
-                $msgType = "text";
-                $textTpl = "<xml>
+                $contentStr = "$label" . "的空气质量为 : ";
+
+                $sql_command = "SELECT name FROM sensor_names";
+                $query = $this->mysqlite_do($sql_command);
+                $sensor_names = sqlite_fetch_all($query);
+                $template = array(
+                    'touser' => "$fromUsername",
+                    'template_id' => "QFgXz7WXGUoRX4Rd5mShVdkUH1NWpMypYAI1-6UW6P0",
+                    'data' => array(
+                        'label' => array(
+                            'value' => urlencode("$label"),
+                            'color' => "#000000"),
+                        'PM2_5' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000"),
+                        'CO' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000"),
+                        'SO2' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000"),
+                        'O3' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000")
+                    )
+                );
+                foreach ($sensor_names as $sensor_name) {
+                    $sql_command = "SELECT sensor_$sensor_name[0] FROM devices WHERE device_id=='$device_id'";
+                    $query = $this->mysqlite_do($sql_command);
+                    $result = sqlite_fetch_all($query);
+                    $sensor_id = $result[0]["sensor_$sensor_name[0]"];
+                    $value = $this->yeelinkapi_read_lastvalue($device_id, $sensor_id);
+                    $template["data"]["$sensor_name[0]"]["value"] = urlencode("$value");
+                    if ($sensor_name[0] == "PM2_5") {
+                        $contentStr .= "\nPM2.5的数值为 : $value";
+                    } else {
+                        $contentStr .= "\n$sensor_name[0]的数值为 : $value";
+                    }
+                }
+                $this->update_access_token();
+                $template_result = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                if ($template_result["errcode"] != "0") {
+                    $time = time();
+                    $msgType = "text";
+                    $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
 							<CreateTime>%s</CreateTime>
@@ -295,27 +336,9 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-                $contentStr = "$label" . "的空气质量为 : ";
-
-                $sql_command = "SELECT name FROM sensor_names";
-                $query = $this->mysqlite_do($sql_command);
-                $sensor_names = sqlite_fetch_all($query);
-                //$value=array();
-                foreach ($sensor_names as $sensor_name) {
-                    $sql_command = "SELECT sensor_$sensor_name[0] FROM devices WHERE device_id=='$device_id'";
-                    $query = $this->mysqlite_do($sql_command);
-                    $result = sqlite_fetch_all($query);
-                    $sensor_id = $result[0]["sensor_$sensor_name[0]"];
-                    $value = $this->yeelinkapi_read_lastvalue($device_id, $sensor_id);
-                    if ($sensor_name[0] == "PM2_5") {
-                        $contentStr .= "\nPM2.5的数值为 : $value";
-                    } else {
-                        $contentStr .= "\n$sensor_name[0]的数值为 : $value";
-                    }
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                    echo $resultStr;
                 }
-
-                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                echo $resultStr;
             } else {
                 $msgType_old = $msgType;
 
