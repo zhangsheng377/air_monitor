@@ -213,7 +213,8 @@ class wechatCallbackapiTest
                         );
                         $this->update_access_token();
                         $template_result = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
-                        if ($template_result["errcode"] != "0") {
+                        $template_json = json_decode($template_result, true);
+                        if ($template_json["errmsg"] != "ok") {
                             $time = time();
                             $msgType = "text";
                             $contentStr = "由于微信的限制，目前我们只能请您采取发送命令的方式进行设置阈值。对给您造成的不便，我们感到万分抱歉。\n\n命令格式：监测类型 报警阈值\n例子：PM2.5 56.7\n\n目前所支持的监测类型有：PM2.5、CO、SO2、O3";
@@ -340,7 +341,9 @@ class wechatCallbackapiTest
                 }
                 $this->update_access_token();
                 $template_result = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
-                if ($template_result["errcode"] != "0") {
+                $template_json = json_decode($template_result, true);
+                if ($template_json["errmsg"] != "ok") {
+                    //$contentStr .= "\n\n$template_result";
                     $time = time();
                     $msgType = "text";
                     $textTpl = "<xml>
