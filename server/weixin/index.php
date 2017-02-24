@@ -212,7 +212,22 @@ class wechatCallbackapiTest
                             )
                         );
                         $this->update_access_token();
-                        $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                        $template_result = $this->curl_request("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=$this->access_token", urldecode(json_encode($template)));
+                        if ($template_result["errcode"] != "0") {
+                            $time = time();
+                            $msgType = "text";
+                            $contentStr = "由于微信的限制，目前我们只能请您采取发送命令的方式进行设置阈值。对给您造成的不便，我们感到万分抱歉。\n\n命令格式：监测类型 报警阈值\n例子：PM2.5 56.7\n\n目前所支持的监测类型有：PM2.5、CO、SO2、O3";
+                            $textTpl = "<xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							<FuncFlag>0</FuncFlag>
+							</xml>";
+                            $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                            echo $resultStr;
+                        }
                     } else {
                         $contentStr = "点击事件 $eventkey 暂时未被收录\n\n请联系系统管理员：435878393";
                         $time = time();
