@@ -10,14 +10,10 @@ class SENSOR_CONFIG():
     A = 1200
 
     address = 0x48
-    # A0 = 0x40
-    # A1 = 0x41
-    # A2 = 0x42
-    # A3 = 0x43
-    A0 = 0x41
-    A1 = 0x42
-    A2 = 0x43
-    A3 = 0x44
+    A0 = 0x40
+    A1 = 0x41
+    A2 = 0x42
+    A3 = 0x43
 
     bus = smbus.SMBus(1)
 
