@@ -14,8 +14,8 @@ class SENSOR_CONFIG():
     # A1 = 0x41
     # A2 = 0x42
     # A3 = 0x43
-    A0 = 0x42
-    A1 = 0x42
+    A0 = 0x39
+    A1 = 0x40
     A2 = 0x43
     A3 = 0x44
 
