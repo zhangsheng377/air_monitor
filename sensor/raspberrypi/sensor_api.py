@@ -14,10 +14,10 @@ class SENSOR_CONFIG():
     # A1 = 0x41
     # A2 = 0x42
     # A3 = 0x43
-    A0 = 0x01
-    A1 = 0x02
-    A2 = 0x03
-    A3 = 0x04
+    A0 = 0x41
+    A1 = 0x42
+    A2 = 0x43
+    A3 = 0x44
 
     bus = smbus.SMBus(1)
 
