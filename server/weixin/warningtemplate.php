@@ -39,7 +39,7 @@ foreach ($users_detail as $user_detail) {
             echo "abs($value - $alertvalue)\n\r";
             echo "$time - $alerttime";
             $alertvalue = $user_detail["$sensor_name[0]_alertvalue"];
-            if (abs($value - $alertvalue) > 1.0) {
+            if (abs($value - $alertvalue) > 0.1) {
                 $time = time();
                 $alerttime = $user_detail["$sensor_name[0]_alerttime"];
                 if ($time - $alerttime > 60 * 30) {
