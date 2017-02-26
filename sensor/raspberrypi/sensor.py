@@ -80,6 +80,11 @@ while True:
             if event.key == K_ESCAPE:
                 sys.exit()
 
+    value_pm25 = sensor_api.read_pm25()
+    if value_pm25 > 0:
+        # print "pm2.5 :", value_pm25
+        values['PM2.5'] = value_pm25
+
     value_CO = sensor_api.read_CO()
     if value_CO > 0:
         # print "CO :", value_CO
@@ -100,11 +105,6 @@ while True:
     if time_now - time_old > 15:
         # print "tick", time_now - time_old
         time_old = time_now
-
-        value_pm25 = sensor_api.read_pm25()
-        if value_pm25 > 0:
-            # print "pm2.5 :", value_pm25
-            values['PM2.5'] = value_pm25
 
         if not _DEBUG_:
             print "send value", values['CO'], values['SO2']
