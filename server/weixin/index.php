@@ -260,7 +260,7 @@ class wechatCallbackapiTest
 
                     $ids = $this->get_openids();
                     $count_ids = count($ids);
-                    $contentStr = "现在一共有 $count_ids 位朋友关注了本公众号~";
+                    $contentStr = "您是第 $count_ids 位关注本公众号的小伙伴~~谢谢您。\n\n温馨提示：请尽快点击下方菜单的 设置阈值 选项，来调整报警阈值哦~另外，如果遇到了频繁报警，也请记得把阈值调整到您合适的范围哦~~~";
                     foreach ($ids as $id) {
                         $sql_command = "SELECT COUNT(openid) FROM users WHERE openid=='$id'";
                         $query = $this->mysqlite_do($sql_command);
