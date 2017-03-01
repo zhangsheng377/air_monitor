@@ -13,10 +13,14 @@ class SENSOR_CONFIG():
 
     address = 0x48
     # 元件上的标号是反的，A0应该在A2的位置，另外A3貌似没用
-    A0 = 0x40
-    A1 = 0x41
-    A2 = 0x42
-    A3 = 0x43
+    #A0 = 0x40
+    #A1 = 0x41
+    #A2 = 0x42
+    #A3 = 0x43
+    A0 = 0x00
+    A1 = 0x01
+    A2 = 0x02
+    A3 = 0x03
 
     bus = smbus.SMBus(1)
 
