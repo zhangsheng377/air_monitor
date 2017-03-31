@@ -14,9 +14,18 @@ from time import time
 
 import pycurl
 
-_DEBUG_ = False
+import RPi.GPIO as GPIO
+# BOARD编号方式，基于插座引脚编号
+GPIO.setmode(GPIO.BOARD)
+# 输出模式
+GPIO.setup(17,GPIO.OUT)
+GPIO.setup(18,GPIO.OUT)
+GPIO.output(17,GPIO.HIGH)
+GPIO.output(18,GPIO.LOW)
 
-MYID = 1
+_DEBUG_ = True
+
+MYID = 0
 yeelink_config.init(MYID)
 device_id = yeelink_config.device_id()
 apikey = yeelink_config.apikey()

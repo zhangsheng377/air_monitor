@@ -2,3 +2,4 @@
 *.pyc
 .idea/
 *.ms14 (Security copy)
+.vs/
