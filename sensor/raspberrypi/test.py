@@ -16,4 +16,6 @@ while True:
                 try:
                     value = float(value_str)
                     print name, "--", value
+                except:
+                    pass
     time.sleep(0.1)
