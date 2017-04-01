@@ -15,14 +15,13 @@ from time import time
 import pycurl
 
 import RPi.GPIO as GPIO
-
 # BOARD编号方式，基于插座引脚编号
 GPIO.setmode(GPIO.BOARD)
 # 输出模式
-GPIO.setup(17, GPIO.OUT)
-GPIO.setup(18, GPIO.OUT)
-GPIO.output(17, GPIO.HIGH)
-GPIO.output(18, GPIO.LOW)
+GPIO.setup(17,GPIO.OUT)
+GPIO.setup(18,GPIO.OUT)
+GPIO.output(17,GPIO.HIGH)
+GPIO.output(18,GPIO.LOW)
 
 _DEBUG_ = True
 
@@ -90,22 +89,22 @@ while True:
             if event.key == K_ESCAPE:
                 sys.exit()
 
-    value_pm25 = sensor_api.read_value('pm2.5')
+    value_pm25 = sensor_api.read_pm25()
     if value_pm25 > 0:
         # print "pm2.5 :", value_pm25
         values['PM2.5'] = value_pm25
 
-    value_CO = sensor_api.read_value('CO')
+    value_CO = sensor_api.read_CO()
     if value_CO > 0:
         # print "CO :", value_CO
         values['CO'] = value_CO
 
-    value_SO2 = sensor_api.read_value('SO2')
+    value_SO2 = sensor_api.read_SO2()
     if value_SO2 > 0:
         # print "SO2 :", value_SO2
         values['SO2'] = value_SO2
 
-    value_O3 = sensor_api.read_value('O3')
+    value_O3 = sensor_api.read_O3()
     if value_O3 > 0:
         # print "O3 :", value_O3
         values['O3'] = value_O3
