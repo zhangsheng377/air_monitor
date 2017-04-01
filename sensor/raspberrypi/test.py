@@ -13,6 +13,7 @@ while True:
             if len(message_split) > 1:
                 name = message_split[0]
                 value_str = message_split[1]
-                value = float(value_str)
-                print name, "--", value
+                try:
+                    value = float(value_str)
+                    print name, "--", value
     time.sleep(0.1)
