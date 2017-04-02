@@ -14,8 +14,6 @@ from time import time
 
 import pycurl
 
-pygame.mouse.set_visible(False)
-
 _DEBUG_ = True
 
 MYID = 0
@@ -73,6 +71,8 @@ for y in range(0, y_mydashboard):
 
 values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = 0.06
 values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = 1.35
+
+pygame.mouse.set_visible(False)
 
 while True:
     for event in pygame.event.get():
