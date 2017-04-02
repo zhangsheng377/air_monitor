@@ -14,6 +14,8 @@ from time import time
 
 import pycurl
 
+pygame.mouse.set_visible(False)
+
 _DEBUG_ = True
 
 MYID = 0
