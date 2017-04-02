@@ -90,7 +90,7 @@ while True:
             if event.key == K_ESCAPE:
                 sys.exit()
 
-    value_pm25 = sensor_api.read_value('pm2.5')
+    value_pm25 = sensor_api.read_value('PM2.5')
     if value_pm25 > 0:
         # print "pm2.5 :", value_pm25
         values['PM2.5'] = value_pm25

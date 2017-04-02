@@ -31,7 +31,7 @@ void loop() {
   if (temp > 0) {
     value_pm25 = temp;
   }
-  Serial.print("pm2.5:"); Serial.println(value_pm25);
+  Serial.print("PM2.5:"); Serial.println(value_pm25);
 
   value_CO = map(analogRead(CO), 0, 1023, 0, 1000);
   Serial.print("CO:"); Serial.println(value_CO);

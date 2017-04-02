@@ -8,6 +8,10 @@ _DEBUG_ = False
 
 class SENSOR_CONFIG():
     serial_0 = serial.Serial("/dev/ttyUSB0", 9600)
+    value_pm = -1
+    value_CO = -1
+    value_SO2 = -1
+    value_O3 = -1
 
 
 GPIO.setmode(GPIO.BOARD)
@@ -30,5 +34,20 @@ def read_value(sensor_name):
                     # print name, "--", value
                 except:
                     return -1.0
-                if name == sensor_name:
-                    return value
+                if value > 0:
+                    if name == "PM2.5":
+                        sensor_config.value_pm = value
+                    elif name == "CO":
+                        sensor_config.value_CO = value
+                    elif name == "SO2":
+                        sensor_config.value_SO2 = value
+                    elif name == "O3":
+                        sensor_config.value_O3 = value
+    if sensor_name == "PM2.5":
+        return sensor_config.value_pm
+    elif sensor_name == "CO":
+        return sensor_config.value_CO
+    elif sensor_name == "SO2":
+        return sensor_config.value_SO2
+    else:
+        return sensor_config.value_O3
