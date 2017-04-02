@@ -14,16 +14,6 @@ from time import time
 
 import pycurl
 
-import RPi.GPIO as GPIO
-
-# BOARD编号方式，基于插座引脚编号
-GPIO.setmode(GPIO.BOARD)
-# 输出模式
-GPIO.setup(17, GPIO.OUT)
-GPIO.setup(18, GPIO.OUT)
-GPIO.output(17, GPIO.HIGH)
-GPIO.output(18, GPIO.LOW)
-
 _DEBUG_ = True
 
 MYID = 0
