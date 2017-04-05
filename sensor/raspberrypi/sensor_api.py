@@ -12,6 +12,8 @@ class SENSOR_CONFIG():
     value_CO = -1
     value_SO2 = -1
     value_O3 = -1
+    value_HCHO = -1
+    value_MQ2 = -1
 
 
 GPIO.setmode(GPIO.BOARD)
@@ -43,11 +45,19 @@ def read_value(sensor_name):
                         sensor_config.value_SO2 = value
                     elif name == "O3":
                         sensor_config.value_O3 = value
+                    elif name == "HCHO":
+                        sensor_config.value_HCHO = value
+                    elif name == "MQ2":
+                        sensor_config.value_MQ2 = value
     if sensor_name == "PM2.5":
         return sensor_config.value_pm
     elif sensor_name == "CO":
         return sensor_config.value_CO
     elif sensor_name == "SO2":
         return sensor_config.value_SO2
-    else:
+    elif sensor_name == "O3":
         return sensor_config.value_O3
+    elif sensor_name == "HCHO":
+        return sensor_config.value_HCHO
+    else:
+        return sensor_config.value_MQ2

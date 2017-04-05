@@ -5,6 +5,8 @@
 #define CO A0
 #define SO2 A1
 #define O3 A2
+#define HCHO A3
+#define MQ2 A4
 
 SoftwareSerial mySerial_pm(pm25_RX, pm25_TX);
 float A = 1000.0;
@@ -13,6 +15,8 @@ float value_pm25 = 0.0;
 float value_CO = 0.0;
 float value_SO2 = 0.0;
 float value_O3 = 0.0;
+float value_HCHO = 0.0;
+float value_MQ2 = 0.0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,6 +25,8 @@ void setup() {
   pinMode(CO, INPUT);
   pinMode(SO2, INPUT);
   pinMode(O3, INPUT);
+  pinMode(HCHO, INPUT);
+  pinMode(MQ2, INPUT);
 }
 
 void loop() {
@@ -41,6 +47,12 @@ void loop() {
 
   value_O3 = map(analogRead(O3), 0, 1023, 0, 1000);
   Serial.print("O3:"); Serial.println(value_O3);
+  
+  value_HCHO = map(analogRead(HCHO), 0, 1023, 0, 1000);
+  Serial.print("HCHO:"); Serial.println(value_HCHO);
+  
+  value_MQ2 = map(analogRead(MQ2), 0, 1023, 0, 1000);
+  Serial.print("MQ2:"); Serial.println(value_MQ2);
 
  //Serial.println("");
   //delay(500);

@@ -69,8 +69,8 @@ for y in range(0, y_mydashboard):
                                                                         values_range[names[x + y * x_mydashboard]][1])
         values[names[x + y * x_mydashboard]] = 0.0
 
-values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = 0.06
-values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = 1.35
+# values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = 0.06
+# values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = 1.35
 
 pygame.mouse.set_visible(False)
 
@@ -103,6 +103,14 @@ while True:
         values['O3'] = value_O3
     # values['O3'] = 0
 
+    value_HCHO = sensor_api.read_value('HCHO')
+    if value_HCHO > 0:
+        values['甲醛'.decode('gbk', 'ignore').encode('utf-8')] = value_HCHO
+
+    value_MQ2 = sensor_api.read_value('MQ2')
+    if value_MQ2 > 0:
+        values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = value_MQ2
+
     time_now = time()
     if time_now - time_old > 15:
         # print "tick", time_now - time_old
@@ -113,7 +121,11 @@ while True:
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
-            # yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_HCHO_id(),
+                                   values['甲醛'.decode('gbk', 'ignore').encode('utf-8')])
+            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_MQ2_id(),
+                                   values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')])
 
             mycurl = pycurl.Curl()
             mycurl.setopt(mycurl.URL, 'http://www.zhangshengdong.com/weixin/warningtemplate.php')
