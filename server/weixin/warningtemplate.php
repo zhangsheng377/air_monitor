@@ -31,6 +31,10 @@ foreach ($users_detail as $user_detail) {
         $value = yeelinkapi_read_lastvalue($device_id, $sensor_id);
         if ($sensor_name[0] == "PM2_5") {
             $sensor_truename = "PM2.5";
+        } elseif ($sensor_name[0] == "HCHO") {
+            $sensor_truename = "甲醛";
+        } elseif ($sensor_name[0] == "MQ2") {
+            $sensor_truename = "易燃气体";
         } else {
             $sensor_truename = $sensor_name[0];
         }

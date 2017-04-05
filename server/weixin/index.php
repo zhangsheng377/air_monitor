@@ -95,7 +95,7 @@ class wechatCallbackapiTest
                     $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     foreach ($result as $entry) {
-                        $contentStr = $contentStr . "\n" . $entry['device_id'] . "  " . $entry['location_x'] . "  " . $entry['location_y'] . "  " . $entry['sensor_PM2.5'] . "  " . $entry['sensor_CO'] . "  " . $entry['sensor_SO2'] . "  " . $entry['sensor_O3'];
+                        $contentStr = $contentStr . "\n" . $entry['device_id'] . "  " . $entry['location_x'] . "  " . $entry['location_y'] . "  " . $entry['sensor_PM2_5'] . "  " . $entry['sensor_CO'] . "  " . $entry['sensor_SO2'] . "  " . $entry['sensor_O3'] . "  " . $entry['sensor_HCHO'] . "  " . $entry['sensor_MQ2'];
                     }
                     $sql_command = "SELECT COUNT(name) FROM sensor_names";
                     $query = $this->mysqlite_do($sql_command);
@@ -106,7 +106,7 @@ class wechatCallbackapiTest
                     $query = $this->mysqlite_do($sql_command);
                     $result = sqlite_fetch_all($query);
                     foreach ($result as $entry) {
-                        $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2.5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'];
+                        $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2_5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'] . "  " . $entry['HCHO_limit'] . "  " . $entry['MQ2_limit'];
                     }
 
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
@@ -131,6 +131,10 @@ class wechatCallbackapiTest
                         $sensor_name = $str[0];
                         if ($sensor_name == "PM2.5") {
                             $sensor_name = "PM2_5";
+                        } elseif ($sensor_name == "甲醛") {
+                            $sensor_name = "HCHO";
+                        } elseif ($sensor_name == "可燃气体") {
+                            $sensor_name = "MQ2";
                         }
                         $limit_sensor = $sensor_name . "_limit";
                         $value = (double)$str[1];
@@ -176,6 +180,10 @@ class wechatCallbackapiTest
                             $limit_value = $result[0]["$sensor_name[0]_limit"];
                             if ($sensor_name[0] == "PM2_5") {
                                 $contentStr .= "\nPM2.5 : $limit_value";
+                            } elseif ($sensor_name[0] == "HCHO") {
+                                $contentStr .= "\n甲醛 : $limit_value";
+                            } elseif ($sensor_name[0] == "MQ2") {
+                                $contentStr .= "\n易燃气体 : $limit_value";
                             } else {
                                 $contentStr .= "\n$sensor_name[0] : $limit_value";
                             }
@@ -204,10 +212,10 @@ class wechatCallbackapiTest
                                     'value' => urlencode("监测类型 报警阈值"),
                                     'color' => "#00FF00"),
                                 'third' => array(
-                                    'value' => urlencode("PM2.5 56.7"),
+                                    'value' => urlencode("PM2.5 56.8"),
                                     'color' => "#0000FF"),
                                 'fourth' => array(
-                                    'value' => urlencode("目前所支持的监测类型有：PM2.5、CO、SO2、O3"),
+                                    'value' => urlencode("目前所支持的监测类型有：PM2.5、CO、SO2、O3、甲醛、可燃气体"),
                                     'color' => "#000000")
                             )
                         );
@@ -217,7 +225,7 @@ class wechatCallbackapiTest
                         if ($template_json["errmsg"] != "ok") {
                             $time = time();
                             $msgType = "text";
-                            $contentStr = "由于微信的限制，目前我们只能请您采取发送命令的方式进行设置阈值。对给您造成的不便，我们感到万分抱歉。\n\n命令格式：监测类型 报警阈值\n例子：PM2.5 56.7\n\n目前所支持的监测类型有：PM2.5、CO、SO2、O3";
+                            $contentStr = "由于微信的限制，目前我们只能请您采取发送命令的方式进行设置阈值。对给您造成的不便，我们感到万分抱歉。\n\n命令格式：监测类型 报警阈值\n例子：PM2.5 56.7\n\n目前所支持的监测类型有：PM2.5、CO、SO2、O3、甲醛、可燃气体";
                             $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
@@ -260,13 +268,13 @@ class wechatCallbackapiTest
 
                     $ids = $this->get_openids();
                     $count_ids = count($ids);
-                    $contentStr = "您是第 $count_ids 位关注本公众号的小伙伴~~谢谢您。\n\n温馨提示：请尽快点击下方菜单的 设置阈值 选项，来调整报警阈值哦~另外，如果遇到了频繁报警，也请记得把阈值调整到您合适的范围哦~~~";
+                    $contentStr = "您是第 $count_ids 位关注本公众号的小伙伴~~谢谢您。\n\n温馨提示：请尽快点击下方菜单的 设置阈值 选项，来调整报警阈值哦~\n另外，如果遇到了频繁报警，也请记得把阈值调整到您合适的范围哦~~~";
                     foreach ($ids as $id) {
                         $sql_command = "SELECT COUNT(openid) FROM users WHERE openid=='$id'";
                         $query = $this->mysqlite_do($sql_command);
                         $result = sqlite_fetch_all($query);
                         if ($result[0]["COUNT(openid)"] == "0") {
-                            $sql_command = "INSERT INTO users VALUES('$id','354298',70.0,120.0,40.0,99999.0)";
+                            $sql_command = "INSERT INTO users VALUES('$id',,,,,,,,,,,,,,,,,,,)";
                             $is_exec = $this->mysqlite_do($sql_command, $error);
                             if ($is_exec) {
                                 //$contentStr .= "\nINSERT $id success\n";
@@ -307,7 +315,7 @@ class wechatCallbackapiTest
                 $sensor_names = sqlite_fetch_all($query);
                 $template = array(
                     'touser' => "$fromUsername",
-                    'template_id' => "QFgXz7WXGUoRX4Rd5mShVdkUH1NWpMypYAI1-6UW6P0",
+                    'template_id' => "hO5e8h7pRli25Nqcn9EoROpXTVd24V3hL7X94mjo4g8",
                     'data' => array(
                         'label' => array(
                             'value' => urlencode("$label"),
@@ -322,6 +330,12 @@ class wechatCallbackapiTest
                             'value' => urlencode(""),
                             'color' => "#000000"),
                         'O3' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000"),
+                        'HCHO' => array(
+                            'value' => urlencode(""),
+                            'color' => "#000000"),
+                        'MQ2' => array(
                             'value' => urlencode(""),
                             'color' => "#000000")
                     )
