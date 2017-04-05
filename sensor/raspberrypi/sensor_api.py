@@ -44,7 +44,8 @@ def read_value(sensor_name):
                     elif name == "SO2":
                         sensor_config.value_SO2 = value
                     elif name == "O3":
-                        sensor_config.value_O3 = value
+                        if value < 500:
+                            sensor_config.value_O3 = value
                     elif name == "HCHO":
                         sensor_config.value_HCHO = value
                     elif name == "MQ2":
