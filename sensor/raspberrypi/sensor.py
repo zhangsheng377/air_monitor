@@ -54,8 +54,8 @@ names = ['PM2.5', 'CO', 'SO2', 'O3', '甲醛'.decode('gbk', 'ignore').encode('ut
 values_range = {}
 values_range[names[0]] = (0, 500)
 values_range[names[1]] = (0, 200)
-values_range[names[2]] = (0, 50)
-values_range[names[3]] = (0, 50)
+values_range[names[2]] = (0, 100)
+values_range[names[3]] = (0, 100)
 values_range[names[4]] = (0, 1000)
 values_range[names[5]] = (0, 1000)
 
