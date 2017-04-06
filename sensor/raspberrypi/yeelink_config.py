@@ -56,8 +56,8 @@ def sensor_O3_id():
 
 
 def sensor_HCHO_id():
-    return myconfig.sensor_O3_id
+    return myconfig.sensor_HCHO_id
 
 
 def sensor_MQ2_id():
-    return myconfig.sensor_O3_id
+    return myconfig.sensor_MQ2_id
