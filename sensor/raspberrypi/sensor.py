@@ -117,16 +117,20 @@ while True:
         time_old = time_now
 
         if not _DEBUG_:
-            print "\nsend value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')], values[
-                '易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
+            print "\nsend value", values['PM2.5']
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
+            print "\nsend value", values['CO']
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
+            print "\nsend value", values['SO2']
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+            print "\nsend value", values['O3']
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_HCHO_id(),
                                    values['甲醛'.decode('gbk', 'ignore').encode('utf-8')])
+            print "\nsend value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')]
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_MQ2_id(),
                                    values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')])
+            print "\nsend value", values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
 
             mycurl = pycurl.Curl()
             mycurl.setopt(mycurl.URL, 'http://www.zhangshengdong.com/weixin/warningtemplate.php')
