@@ -117,7 +117,7 @@ while True:
         time_old = time_now
 
         if not _DEBUG_:
-            print "send value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')], values[
+            print "\nsend value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')], values[
                 '易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
             yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
