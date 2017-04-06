@@ -114,7 +114,7 @@ while True:
         values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')] = value_MQ2
 
     time_now = time()
-    if time_now - time_old > 15:
+    if time_now - time_old > 10:
         # print "tick", time_now - time_old
         time_old = time_now
 
