@@ -14,5 +14,6 @@ def send_value(apikey, device_id, sensor_id, value):
     try:
         mycurl.perform()
     except Exception, e:
-        print Exception, ":", e
+        # print Exception, ":", e
+        print ""
     mycurl.close()
