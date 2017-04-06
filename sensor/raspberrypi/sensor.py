@@ -133,7 +133,8 @@ while True:
             try:
                 mycurl.perform()
             except Exception, e:
-                print Exception, ":", e
+                # print Exception, ":", e
+                print ""
             mycurl.close()
 
             # print ""
