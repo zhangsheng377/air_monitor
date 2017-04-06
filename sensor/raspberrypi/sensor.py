@@ -16,7 +16,7 @@ import pycurl
 
 _DEBUG_ = False
 
-MYID = 0
+MYID = 1
 yeelink_config.init(MYID)
 device_id = yeelink_config.device_id()
 apikey = yeelink_config.apikey()
