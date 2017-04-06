@@ -39,17 +39,28 @@ def read_value(sensor_name):
                 if value > 0:
                     if name == "PM2.5":
                         sensor_config.value_pm = value
+                        if sensor_name == "PM2.5":
+                            return sensor_config.value_pm
                     elif name == "CO":
                         sensor_config.value_CO = value
+                        if sensor_name == "CO":
+                            return sensor_config.value_CO
                     elif name == "SO2":
                         sensor_config.value_SO2 = value
+                        if sensor_name == "SO2":
+                            return sensor_config.value_SO2
                     elif name == "O3":
-                        if value < 500:
-                            sensor_config.value_O3 = value
+                        sensor_config.value_O3 = value
+                        if sensor_name == "O3":
+                            return sensor_config.value_O3
                     elif name == "HCHO":
                         sensor_config.value_HCHO = value
+                        if sensor_name == "HCHO":
+                            return sensor_config.value_HCHO
                     elif name == "MQ2":
                         sensor_config.value_MQ2 = value
+                        if sensor_name == "MQ2":
+                            return sensor_config.value_MQ2
     if sensor_name == "PM2.5":
         return sensor_config.value_pm
     elif sensor_name == "CO":
