@@ -9,7 +9,7 @@
 #define MQ2 A4
 
 SoftwareSerial mySerial_pm(pm25_RX, pm25_TX);
-float A = 1000.0;
+float A = 800.0;
 
 float value_pm25 = 0.0;
 float value_CO = 0.0;
@@ -47,14 +47,14 @@ void loop() {
 
   value_O3 = map(analogRead(O3), 0, 1023, 0, 1000);
   Serial.print("O3:"); Serial.println(value_O3);
-  
+
   value_HCHO = map(analogRead(HCHO), 0, 1023, 0, 1000);
   Serial.print("HCHO:"); Serial.println(value_HCHO);
-  
+
   value_MQ2 = map(analogRead(MQ2), 0, 1023, 0, 1000);
   Serial.print("MQ2:"); Serial.println(value_MQ2);
 
- //Serial.println("");
+  //Serial.println("");
   //delay(500);
 }
 
