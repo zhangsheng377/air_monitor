@@ -35,7 +35,7 @@ def read_value(sensor_name):
                     value = float(value_str)
                     # print name, "--", value
                 except:
-                    return -1.0
+                    continue
                 if value > 0:
                     if name == "PM2.5":
                         sensor_config.value_pm = value
