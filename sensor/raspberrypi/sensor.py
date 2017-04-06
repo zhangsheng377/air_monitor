@@ -27,6 +27,8 @@ pygame.init()
 pygame.display.set_caption("Demo")
 clock = pygame.time.Clock()
 
+count = 0
+
 try:
     import wx
 
@@ -117,26 +119,32 @@ while True:
         time_old = time_now
 
         if not _DEBUG_:
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
-            print "\nsend value", values['PM2.5']
-            time.sleep(1)
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
-            print "\nsend value", values['CO']
-            time.sleep(1)
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
-            print "\nsend value", values['SO2']
-            time.sleep(1)
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
-            print "\nsend value", values['O3']
-            time.sleep(1)
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_HCHO_id(),
-                                   values['甲醛'.decode('gbk', 'ignore').encode('utf-8')])
-            print "\nsend value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')]
-            time.sleep(1)
-            yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_MQ2_id(),
-                                   values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')])
-            print "\nsend value", values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
-            time.sleep(1)
+            if count == 0:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_pm25_id(), values['PM2.5'])
+                print "\nsend value", values['PM2.5']
+                count += 1
+            elif count == 1:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_CO_id(), values['CO'])
+                print "\nsend value", values['CO']
+                count += 1
+            elif count == 2:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_SO2_id(), values['SO2'])
+                print "\nsend value", values['SO2']
+                count += 1
+            elif count == 3:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_O3_id(), values['O3'])
+                print "\nsend value", values['O3']
+                count += 1
+            elif count == 4:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_HCHO_id(),
+                                       values['甲醛'.decode('gbk', 'ignore').encode('utf-8')])
+                print "\nsend value", values['甲醛'.decode('gbk', 'ignore').encode('utf-8')]
+                count += 1
+            elif count == 5:
+                yeelink_api.send_value(apikey, device_id, yeelink_config.sensor_MQ2_id(),
+                                       values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')])
+                print "\nsend value", values['易燃气体'.decode('gbk', 'ignore').encode('utf-8')]
+                count = 0
 
             mycurl = pycurl.Curl()
             mycurl.setopt(mycurl.URL, 'http://www.zhangshengdong.com/weixin/warningtemplate.php')
