@@ -77,7 +77,7 @@ else:
             f.write("\t")
             f.write(str(yArr[i]))
             f.write("\t")
-            rate = abs(yHat[i] - yArr[i]) * 1.0 / yArr[i]
+            rate = (yHat[i] * 1.0 - yArr[i] * 1.0) ** 2 / yArr[i]
             f.write(str(rate))
             f.write("\n")
         if i > sum_rate:
