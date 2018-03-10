@@ -18,7 +18,9 @@ class TXA:
         self.transfer_method = transfer_method
         self.serial = serial
 
-    def message(self, content, address=self.user_address):
+    def message(self, content, address=''):
+        if address == '':
+            address = self.user_address
         message = self.sender_identifier + 'TXA' + ',' + \
                   address + ',' + \
                   self.communication_category + ',' + \
@@ -64,7 +66,8 @@ if __name__ == "__main__":
     print(hex(XOR_CheckSum_string(bytes('CCICI,0,00', encoding="utf-8"))))
     print(hex(XOR_CheckSum_string(bytes('CCTXA,0247718,1,1,3132333435', encoding="utf-8"))))'''
 
-    txa = TXA(user_address='0247718', transfer_method='1')
+    ser = serial.Serial('/dev/tty1', 115200)
+    txa = TXA(user_address='0247718', serial=ser, transfer_method='1')
     message = txa.message(content='3132333435')
     print(message)
 
