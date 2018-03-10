@@ -11,22 +11,25 @@ def read_serial(ser):
 
 
 class TXA:
-    def __init__(self, user_address, content, sender_identifier='CC', communication_category='1', transfer_method='0'):
+    def __init__(self, user_address, serial, sender_identifier='CC', communication_category='1', transfer_method='0'):
         self.sender_identifier = sender_identifier
         self.user_address = user_address
         self.communication_category = communication_category
         self.transfer_method = transfer_method
-        self.content = content
+        self.serial = serial
 
-    def message(self):
+    def message(self, content, address=self.user_address):
         message = self.sender_identifier + 'TXA' + ',' + \
-                  self.user_address + ',' + \
+                  address + ',' + \
                   self.communication_category + ',' + \
                   self.transfer_method + ',' + \
-                  self.content
+                  content
         self.xor_checkSum = hex(XOR_CheckSum_string(message, encoding="utf-8"))[2:4]
         message = '$' + message + '*' + self.xor_checkSum + '\r\n'
         return bytes(message, encoding="utf-8")
+
+    def send(self, message):
+        self.serial.write(message)
 
 
 def test():
@@ -61,7 +64,11 @@ if __name__ == "__main__":
     print(hex(XOR_CheckSum_string(bytes('CCICI,0,00', encoding="utf-8"))))
     print(hex(XOR_CheckSum_string(bytes('CCTXA,0247718,1,1,3132333435', encoding="utf-8"))))'''
 
-    txa = TXA('0247718', '3132333435', transfer_method='1')
-    print(txa.message())
+    txa = TXA(user_address='0247718', transfer_method='1')
+    message = txa.message(content='3132333435')
+    print(message)
+
+    txa.send(message=message)
 
     # test()
+8
