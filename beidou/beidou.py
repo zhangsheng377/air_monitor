@@ -33,6 +33,9 @@ class TXA:
     def send(self, message):
         self.serial.write(message)
 
+    def read(self):
+        _thread.start_new_thread(read_serial, (self.serial,))
+
 
 def test():
     ser = serial.Serial('COM3', 115200)
@@ -68,9 +71,10 @@ if __name__ == "__main__":
 
     ser = serial.Serial('/dev/tty1', 115200)
     txa = TXA(user_address='0247718', serial=ser, transfer_method='1')
+    txa.read()
+
     message = txa.message(content='3132333435')
     print(message)
-
     txa.send(message=message)
 
     # test()
