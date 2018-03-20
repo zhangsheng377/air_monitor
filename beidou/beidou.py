@@ -1,7 +1,27 @@
 import serial
 import time
-import _thread
-from XOR_CheckSum import XOR_CheckSum_string
+#import _thread
+#from XOR_CheckSum import XOR_CheckSum_string
+
+
+def XOR_CheckSum_string(m_str, encoding="utf-8"):
+    if str == type(m_str):
+        try:
+            m_str = bytes(m_str,encoding=encoding)
+        except:
+            #m_str = bytes(m_str)
+            m_str=m_str.encode(encoding=encoding)
+    sum = 0x0
+    #print(m_str)
+    #print(type(m_str))
+    for c in m_str:
+        try:
+            sum = sum ^ c
+        except:
+            #print(c)
+            sum = sum ^ int(c,16)
+    sum = sum ^ 0x0
+    return sum
 
 
 def read_serial(ser):
@@ -26,7 +46,12 @@ class TXA:
                   self.communication_category + ',' + \
                   self.transfer_method + ',' + \
                   content
+        #print(XOR_CheckSum_string(message, encoding="utf-8"))
         self.xor_checkSum = hex(XOR_CheckSum_string(message, encoding="utf-8"))[2:4]
+        '''try:
+            self.xor_checkSum = hex(XOR_CheckSum_string(message, encoding="utf-8"))[2:4]
+        except:
+            self.xor_checkSum = hex(XOR_CheckSum_string(message))[2:4]'''
         message = '$' + message + '*' + self.xor_checkSum + '\r\n'
         return bytes(message, encoding="utf-8")
 
@@ -34,16 +59,20 @@ class TXA:
         self.serial.write(message)
 
     def read(self):
-        _thread.start_new_thread(read_serial, (self.serial,))
+        try:
+            import _thread
+            _thread.start_new_thread(read_serial, (self.serial,))
+        except:
+            import thread
+            thread.start_new_thread(read_serial, (self.serial,))
 
 
 def test():
-    ser = serial.Serial('COM3', 115200)
+    ser = serial.Serial('/dev/ttyUSB1', 115200)
     print(ser)
     _thread.start_new_thread(read_serial, (ser,))
     for i in range(5):
         # ser.write(b'$CCICA,0,00*7B\r\n')
-        # ser.write(b'$CCICI,0,00*83\r\n')  # 貌似校验不是83，应该是73
         ser.write(b'$CCICI,0,00*73\r\n')
         # line = ser.readline()
         # print(line)
@@ -69,13 +98,15 @@ if __name__ == "__main__":
     print(hex(XOR_CheckSum_string(bytes('CCICI,0,00', encoding="utf-8"))))
     print(hex(XOR_CheckSum_string(bytes('CCTXA,0247718,1,1,3132333435', encoding="utf-8"))))'''
 
-    ser = serial.Serial('/dev/tty1', 115200)
+    ser = serial.Serial('/dev/ttyUSB1', 115200)
     txa = TXA(user_address='0247718', serial=ser, transfer_method='1')
     txa.read()
 
     message = txa.message(content='3132333435')
     print(message)
     txa.send(message=message)
+
+    time.sleep(60)
 
     # test()
 8

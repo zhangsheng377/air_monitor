@@ -25,39 +25,50 @@ def read_value(sensor_name):
     waitlen = sensor_config.serial_0.inWaiting()
     if waitlen != 0:
         recv = sensor_config.serial_0.read(waitlen)
-        recv_split = recv.split('\n')
+        recv = bytes(recv)
+        #print(recv)
+        try:
+            recv_split = recv.split('\n')
+        except:
+            recv_split = recv.split(b'\n')
+        #print(recv_split)
         for message in recv_split:
-            message_split = message.split(':')
+            try:
+                message_split = message.split(':')
+            except:
+                message_split = message.split(b':')
+            #print(message_split)
             if len(message_split) > 1:
                 name = message_split[0]
                 value_str = message_split[1]
                 try:
-                    value = float(value_str)
+                    value = float(value_str.strip())
                     # print name, "--", value
                 except:
                     continue
+                #print(sensor_name,name,value)
                 if value > 0:
-                    if name == "PM2.5":
+                    if name == b"PM2.5":
                         sensor_config.value_pm = value
                         if sensor_name == "PM2.5":
                             return sensor_config.value_pm
-                    elif name == "CO":
+                    elif name == b"CO":
                         sensor_config.value_CO = value
                         if sensor_name == "CO":
                             return sensor_config.value_CO
-                    elif name == "SO2":
+                    elif name == b"SO2":
                         sensor_config.value_SO2 = value
                         if sensor_name == "SO2":
                             return sensor_config.value_SO2
-                    elif name == "O3":
+                    elif name == b"O3":
                         sensor_config.value_O3 = value
                         if sensor_name == "O3":
                             return sensor_config.value_O3
-                    elif name == "HCHO":
+                    elif name == b"HCHO":
                         sensor_config.value_HCHO = value
                         if sensor_name == "HCHO":
                             return sensor_config.value_HCHO
-                    elif name == "MQ2":
+                    elif name == b"MQ2":
                         sensor_config.value_MQ2 = value
                         if sensor_name == "MQ2":
                             return sensor_config.value_MQ2
