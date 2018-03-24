@@ -86,29 +86,26 @@ class wechatCallbackapiTest
 
                     $sql_command = "SELECT name FROM sensor_names";
                     $query = $this->mysqlite_do($sql_command);
-                    //$result = sqlite_fetch_all($query);
-                    while ($entry=$query->fetchArray()){
-                    //foreach ($result as $entry) {
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
                         $name = $entry['name'];
                         $contentStr .= "\n$name";
                     }
                     $sql_command = "SELECT * FROM devices";
                     $query = $this->mysqlite_do($sql_command);
-                    //$result = sqlite_fetch_all($query);
-                    while ($entry=$query->fetchArray()){
-                    //foreach ($result as $entry) {
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
                         $contentStr = $contentStr . "\n" . $entry['device_id'] . "  " . $entry['location_x'] . "  " . $entry['location_y'] . "  " . $entry['sensor_PM2_5'] . "  " . $entry['sensor_CO'] . "  " . $entry['sensor_SO2'] . "  " . $entry['sensor_O3'] . "  " . $entry['sensor_HCHO'] . "  " . $entry['sensor_MQ2'];
                     }
                     $sql_command = "SELECT COUNT(name) FROM sensor_names";
                     $query = $this->mysqlite_do($sql_command);
-                    $result = $query->fetchArray();
+                    $result = sqlite_fetch_all($query);
                     $contentStr = $contentStr . "\n\n" . $result[0]["COUNT(name)"];
 
                     $sql_command = "SELECT * FROM users";
                     $query = $this->mysqlite_do($sql_command);
-                    //$result = sqlite_fetch_all($query);
-                    while ($entry=$query->fetchArray()){
-                    //foreach ($result as $entry) {
+                    $result = sqlite_fetch_all($query);
+                    foreach ($result as $entry) {
                         $contentStr = $contentStr . "\n" . $entry['openid'] . "  " . $entry['device_id'] . "  " . $entry['PM2_5_limit'] . "  " . $entry['CO_limit'] . "  " . $entry['SO2_limit'] . "  " . $entry['O3_limit'] . "  " . $entry['HCHO_limit'] . "  " . $entry['MQ2_limit'];
                     }
 
@@ -175,12 +172,12 @@ class wechatCallbackapiTest
                         $contentStr = "您所设置的空气质量报警阈值为 : ";
                         $sql_command = "SELECT name FROM sensor_names";
                         $query = $this->mysqlite_do($sql_command);
-                        while ($sensor_name = $query->fetchArray()){
-                        //foreach ($sensor_names as $sensor_name) {
+                        $sensor_names = sqlite_fetch_all($query);
+                        foreach ($sensor_names as $sensor_name) {
                             $sql_command = "SELECT $sensor_name[0]_limit FROM users WHERE openid=='$fromUsername'";
-                            $query_1 = $this->mysqlite_do($sql_command);
-                            $result = $query_1->fetchArray();
-                            $limit_value = $result["$sensor_name[0]_limit"];
+                            $query = $this->mysqlite_do($sql_command);
+                            $result = sqlite_fetch_all($query);
+                            $limit_value = $result[0]["$sensor_name[0]_limit"];
                             if ($sensor_name[0] == "PM2_5") {
                                 $contentStr .= "\nPM2.5 : $limit_value";
                             } elseif ($sensor_name[0] == "HCHO") {
@@ -275,8 +272,8 @@ class wechatCallbackapiTest
                     foreach ($ids as $id) {
                         $sql_command = "SELECT COUNT(openid) FROM users WHERE openid=='$id'";
                         $query = $this->mysqlite_do($sql_command);
-                        $result = $query->fetchArray();
-                        if ($result["COUNT(openid)"] == "0") {
+                        $result = sqlite_fetch_all($query);
+                        if ($result[0]["COUNT(openid)"] == "0") {
                             $sql_command = "INSERT INTO users VALUES('$id',,,,,,,,,,,,,,,,,,,)";
                             $is_exec = $this->mysqlite_do($sql_command, $error);
                             if ($is_exec) {
@@ -313,6 +310,9 @@ class wechatCallbackapiTest
 
                 $contentStr = "$label" . "的空气质量为 : ";
 
+                $sql_command = "SELECT name FROM sensor_names";
+                $query = $this->mysqlite_do($sql_command);
+                $sensor_names = sqlite_fetch_all($query);
                 $template = array(
                     'touser' => "$fromUsername",
                     'template_id' => "hO5e8h7pRli25Nqcn9EoROpXTVd24V3hL7X94mjo4g8",
@@ -340,17 +340,12 @@ class wechatCallbackapiTest
                             'color' => "#000000")
                     )
                 );
-
-                $sql_command = "SELECT name FROM sensor_names";
-                $query = $this->mysqlite_do($sql_command);
-                //$sensor_names = sqlite_fetch_all($query);
-                while ($sensor_name = $query->fetchArray()){
-                //foreach ($sensor_names as $sensor_name) {
+                foreach ($sensor_names as $sensor_name) {
                     $sql_command = "SELECT sensor_$sensor_name[0] FROM devices WHERE device_id=='$device_id'";
-                    $query_1 = $this->mysqlite_do($sql_command);
-                    $result = $query_1->fetchArray();
-                    $sensor_id = $result["sensor_$sensor_name[0]"];
-                    $value = $this->yeelinkapi_read_lastvalue($device_id, $sensor_id)*(1.0+rand(0,200)*1.0/1000.0);
+                    $query = $this->mysqlite_do($sql_command);
+                    $result = sqlite_fetch_all($query);
+                    $sensor_id = $result[0]["sensor_$sensor_name[0]"];
+                    $value = $this->yeelinkapi_read_lastvalue($device_id, $sensor_id);
                     $template["data"]["$sensor_name[0]"]["value"] = urlencode("$value");
                     if ($sensor_name[0] == "PM2_5") {
                         $contentStr .= "\nPM2.5的数值为 : $value";
@@ -472,13 +467,13 @@ class wechatCallbackapiTest
 
     private function mysqlite_do($sql_command, &$error = null)
     {
-        $dbhandle = new SQLite3('sqlitedb.db');
+        $dbhandle = sqlite_open('sqlitedb.db');
         if (empty($error)) {
-            $result = $dbhandle->query("$sql_command");
+            $result = sqlite_query($dbhandle, "$sql_command");
         } else {
-            $result = $dbhandle->exec("$sql_command");
+            $result = sqlite_exec($dbhandle, "$sql_command", $error);
         }
-        //$dbhandle->close();
+        sqlite_close($dbhandle);
         return $result;
     }
 
@@ -489,19 +484,20 @@ class wechatCallbackapiTest
         } else {
             $sql_command = "SELECT device_id FROM users WHERE openid=='$openid'";
             $query = $this->mysqlite_do($sql_command);
-            $result = $query->fetchArray();
-            $device_id = $result[0];
+            $result = sqlite_fetch_all($query);
+            $device_id = $result[0]["device_id"];
         }
         $distance = 9999999;
         $sql_command = "SELECT device_id,location_x,location_y FROM devices";
         $query = $this->mysqlite_do($sql_command);
-        while($result = $query->fetchArray()){
-            $gap_x = (double)$location_x - $result['location_x'];
-            $gap_y = (double)$location_y - $result['location_y'];
+        $result = sqlite_fetch_all($query);
+        foreach ($result as $entry) {
+            $gap_x = (double)$location_x - $entry['location_x'];
+            $gap_y = (double)$location_y - $entry['location_y'];
             $distance_new = pow($gap_x, 2) + pow($gap_y, 2);
             if ($distance_new < $distance) {
                 $distance = $distance_new;
-                $device_id = $result['device_id'];
+                $device_id = $entry['device_id'];
             }
         }
         if ($is_update) {
