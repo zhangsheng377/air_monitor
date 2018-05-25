@@ -11,7 +11,7 @@ sys.path.append(path_BEIDOU)
 from beidou import TXA
 
 serial_BEIDOU = serial.Serial("/dev/ttyUSB1", 115200)
-txa = TXA(user_address='0247718', serial=serial_BEIDOU, transfer_method='2')
+txa = TXA(user_address='0247718', serial=serial_BEIDOU, transfer_method='1')
 txa.read()
 
 _DEBUG_ = False
@@ -20,6 +20,8 @@ time_old = time_func()
 
 values = {}
 names = ['PM2.5', 'CO', 'SO2', 'O3', 'HCHO', 'MQ2']
+
+txa.send(b"$CCICI,0,00*73\r\n")
 
 while True:
 
@@ -58,8 +60,8 @@ while True:
         time_old = time_now
         '''content = "PM2.5:" + values['PM25'] + ",CO:" + values['CO'] + ",SO2:" + values['SO2'] + ",O3:" + values[
             'O3'] + ",HCHO:" + values['HCHO'] + ",MQ2:" + values['MQ2']'''
-        content = "PM2.5-" + str(value_pm25) + "--CO-" + str(value_CO) + "--SO2-" + str(value_SO2) + "--O3-" + str(
-            value_O3) + "--HCHO-" + str(value_HCHO) + "--MQ2-" + str(value_MQ2)
+        content = "PM25" + str(value_pm25) + "CO" + str(value_CO) + "SO2" + str(value_SO2) + "O3" + str(
+            value_O3) + "HCHO" + str(value_HCHO) + "MQ2" + str(value_MQ2)
         '''content = "PM2.5-" + str(values['PM25']) + "--CO-" + str(values['CO']) + "--SO2-" + str(values['SO2']) + "--O3-" + str(
             values['O3']) + "--HCHO-" + str(value_HCHO) + "--MQ2-" + str(value_MQ2)'''
         message = txa.message(content=content)
